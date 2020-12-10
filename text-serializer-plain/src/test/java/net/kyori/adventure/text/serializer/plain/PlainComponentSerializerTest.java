@@ -39,7 +39,7 @@ class PlainComponentSerializerTest {
 
   @Test
   void testToLegacy() {
-    final TextComponent c1 = Component.text().content("hi")
+    final TextComponent c1 = Component.textBuilder().content("hi")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
         Component.text("foo")
@@ -54,7 +54,7 @@ class PlainComponentSerializerTest {
       .build();
     assertEquals("hifoobarbaz", PlainComponentSerializer.plain().serialize(c1));
 
-    final TextComponent c2 = Component.text().content("Hello there, ")
+    final TextComponent c2 = Component.textBuilder().content("Hello there, ")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
       .append(
         Component.text("you")

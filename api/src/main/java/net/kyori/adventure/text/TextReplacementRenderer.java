@@ -73,14 +73,14 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
         if(matcher.start() == 0) {
           // if we're a full match, modify the component directly
           if(matcher.end() == content.length()) {
-            final ComponentLike replacement = state.replacement.apply(matcher, Component.text().content(matcher.group())
+            final ComponentLike replacement = state.replacement.apply(matcher, Component.textBuilder().content(matcher.group())
               .style(component.style()));
 
             modified = replacement == null ? Component.empty() : replacement.asComponent();
           } else {
             // otherwise, work on a child of the root node
             modified = Component.text("", component.style());
-            final ComponentLike child = state.replacement.apply(matcher, Component.text().content(matcher.group()));
+            final ComponentLike child = state.replacement.apply(matcher, Component.textBuilder().content(matcher.group()));
             if(child != null) {
               if(children == null) {
                 children = new ArrayList<>(oldChildrenSize + 1);
@@ -98,7 +98,7 @@ final class TextReplacementRenderer implements ComponentRenderer<TextReplacement
           } else if(replacedUntil < matcher.start()) {
             children.add(Component.text(content.substring(replacedUntil, matcher.start())));
           }
-          final ComponentLike builder = state.replacement.apply(matcher, Component.text().content(matcher.group()));
+          final ComponentLike builder = state.replacement.apply(matcher, Component.textBuilder().content(matcher.group()));
           if(builder != null) {
             children.add(builder.asComponent());
           }

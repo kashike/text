@@ -49,7 +49,7 @@ class GlobalTranslatorTest {
   void testRender() {
     GlobalTranslator.get().addSource(DummyTranslator.INSTANCE);
     assertEquals(
-      Component.text()
+      Component.textBuilder()
         .append(Component.text("Hello "))
         .append(Component.text("kashike", NamedTextColor.DARK_PURPLE))
         .append(Component.text("!"))

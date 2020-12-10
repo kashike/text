@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class SelectorComponentTest extends AbstractComponentTest<SelectorComponent, SelectorComponent.Builder> {
   @Override
   SelectorComponent.Builder builder() {
-    return Component.selector().pattern("@p");
+    return Component.selectorBuilder().pattern("@p");
   }
 
   @Test

@@ -31,7 +31,7 @@ class StorageNBTComponentTest extends ComponentTest {
   @Test
   void testWithoutInterpret() {
     this.test(
-      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
+      Component.storageNBTBuilder().nbtPath("abc").storage(Key.key("doom:apple")).build(),
       object(json -> {
         json.addProperty(ComponentSerializerImpl.NBT, "abc");
         json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -43,7 +43,7 @@ class StorageNBTComponentTest extends ComponentTest {
   @Test
   void testWithInterpret() {
     this.test(
-      Component.storageNBT().nbtPath("abc").storage(Key.key("doom:apple")).build(),
+      Component.storageNBTBuilder().nbtPath("abc").storage(Key.key("doom:apple")).build(),
       object(json -> {
         json.addProperty(ComponentSerializerImpl.NBT, "abc");
         json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);

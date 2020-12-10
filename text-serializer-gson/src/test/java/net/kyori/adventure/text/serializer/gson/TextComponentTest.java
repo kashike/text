@@ -41,7 +41,7 @@ class TextComponentTest extends ComponentTest {
   @Test
   void testComplex1() {
     this.test(
-      Component.text().content("c")
+      Component.textBuilder().content("c")
         .color(NamedTextColor.GOLD)
         .append(Component.text("o", NamedTextColor.DARK_AQUA))
         .append(Component.text("l", NamedTextColor.LIGHT_PURPLE))
@@ -86,7 +86,7 @@ class TextComponentTest extends ComponentTest {
   @Test
   void testComplex2() {
     this.test(
-      Component.text().content("This is a test.")
+      Component.textBuilder().content("This is a test.")
         .color(NamedTextColor.DARK_PURPLE)
         .hoverEvent(HoverEvent.showText(Component.text("A test.")))
         .append(Component.text(" "))

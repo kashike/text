@@ -50,7 +50,7 @@ class TranslatableComponentTest extends ComponentTest {
     this.test(
       Component.translatable(
         KEY,
-        Component.text().content(name)
+        Component.textBuilder().content(name)
           .clickEvent(ClickEvent.suggestCommand(command))
           .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(
             Key.key("minecraft", "player"),

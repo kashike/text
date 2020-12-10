@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class KeybindComponentTest extends AbstractComponentTest<KeybindComponent, KeybindComponent.Builder> {
   @Override
   KeybindComponent.Builder builder() {
-    return Component.keybind().keybind("key.jump");
+    return Component.keybindBuilder().keybind("key.jump");
   }
 
   @Test

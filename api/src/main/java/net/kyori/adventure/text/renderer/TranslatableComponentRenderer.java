@@ -87,21 +87,21 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull C context) {
-    final BlockNBTComponent.Builder builder = nbt(Component.blockNBT(), component)
+    final BlockNBTComponent.Builder builder = nbt(Component.blockNBTBuilder(), component)
       .pos(component.pos());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderEntityNbt(final @NonNull EntityNBTComponent component, final @NonNull C context) {
-    final EntityNBTComponent.Builder builder = nbt(Component.entityNBT(), component)
+    final EntityNBTComponent.Builder builder = nbt(Component.entityNBTBuilder(), component)
       .selector(component.selector());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderStorageNbt(final @NonNull StorageNBTComponent component, final @NonNull C context) {
-    final StorageNBTComponent.Builder builder = nbt(Component.storageNBT(), component)
+    final StorageNBTComponent.Builder builder = nbt(Component.storageNBTBuilder(), component)
       .storage(component.storage());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
@@ -114,13 +114,13 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderKeybind(final @NonNull KeybindComponent component, final @NonNull C context) {
-    final KeybindComponent.Builder builder = Component.keybind().keybind(component.keybind());
+    final KeybindComponent.Builder builder = Component.keybindBuilder().keybind(component.keybind());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderScore(final @NonNull ScoreComponent component, final @NonNull C context) {
-    final ScoreComponent.Builder builder = Component.score()
+    final ScoreComponent.Builder builder = Component.scoreBuilder()
       .name(component.name())
       .objective(component.objective())
       .value(component.value());
@@ -129,13 +129,13 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
   @Override
   protected @NonNull Component renderSelector(final @NonNull SelectorComponent component, final @NonNull C context) {
-    final SelectorComponent.Builder builder = Component.selector().pattern(component.pattern());
+    final SelectorComponent.Builder builder = Component.selectorBuilder().pattern(component.pattern());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
   @Override
   protected @NonNull Component renderText(final @NonNull TextComponent component, final @NonNull C context) {
-    final TextComponent.Builder builder = Component.text().content(component.content());
+    final TextComponent.Builder builder = Component.textBuilder().content(component.content());
     return this.mergeStyleAndOptionallyDeepRender(component, builder, context);
   }
 
@@ -146,7 +146,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
       // we don't have a translation for this component, but the arguments or children
       // of this component might need additional rendering
 
-      final TranslatableComponent.Builder builder = Component.translatable()
+      final TranslatableComponent.Builder builder = Component.translatableBuilder()
         .key(component.key());
       if(!component.args().isEmpty()) {
         final List<Component> args = new ArrayList<>(component.args());
@@ -160,7 +160,7 @@ public abstract class TranslatableComponentRenderer<C> extends AbstractComponent
 
     final List<Component> args = component.args();
 
-    final TextComponent.Builder builder = Component.text();
+    final TextComponent.Builder builder = Component.textBuilder();
     this.mergeStyle(component, builder, context);
 
     // no arguments makes this render very simple

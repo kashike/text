@@ -30,7 +30,7 @@ class EntityNBTComponentTest extends ComponentTest {
   @Test
   void testWithoutInterpret() {
     this.test(
-      Component.entityNBT().nbtPath("abc").selector("test").build(),
+      Component.entityNBTBuilder().nbtPath("abc").selector("test").build(),
       object(json -> {
         json.addProperty(ComponentSerializerImpl.NBT, "abc");
         json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, false);
@@ -42,7 +42,7 @@ class EntityNBTComponentTest extends ComponentTest {
   @Test
   void testWithInterpret() {
     this.test(
-      Component.entityNBT().nbtPath("abc").selector("test").interpret(true).build(),
+      Component.entityNBTBuilder().nbtPath("abc").selector("test").interpret(true).build(),
       object(json -> {
         json.addProperty(ComponentSerializerImpl.NBT, "abc");
         json.addProperty(ComponentSerializerImpl.NBT_INTERPRET, true);

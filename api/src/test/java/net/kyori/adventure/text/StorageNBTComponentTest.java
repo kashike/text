@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class StorageNBTComponentTest extends AbstractNBTComponentTest<StorageNBTComponent, StorageNBTComponent.Builder> {
   @Override
   StorageNBTComponent.Builder builder() {
-    return Component.storageNBT().nbtPath("abc").storage(Key.key("def"));
+    return Component.storageNBTBuilder().nbtPath("abc").storage(Key.key("def"));
   }
 
   @Test

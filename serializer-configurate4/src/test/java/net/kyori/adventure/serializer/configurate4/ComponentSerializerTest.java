@@ -111,7 +111,7 @@ class ComponentSerializerTest implements ConfigurateTestBase {
       n.node(ComponentTypeSerializer.NBT_INTERPRET).raw(true);
       n.node(ComponentTypeSerializer.NBT_BLOCK).raw("^0.0 ^0.0 ^0.0");
     });
-    final Component component = Component.blockNBT()
+    final Component component = Component.blockNBTBuilder()
       .nbtPath("Something[1].CustomName")
       .interpret(true)
       .localPos(0, 0, 0)
@@ -127,7 +127,7 @@ class ComponentSerializerTest implements ConfigurateTestBase {
       n.node(ComponentTypeSerializer.NBT_INTERPRET).raw(false);
       n.node(ComponentTypeSerializer.NBT_ENTITY).raw("@e[limit=1]");
     });
-    final Component component = Component.entityNBT()
+    final Component component = Component.entityNBTBuilder()
       .nbtPath("Something[1].CustomName")
       .interpret(false)
       .selector("@e[limit=1]")
@@ -143,7 +143,7 @@ class ComponentSerializerTest implements ConfigurateTestBase {
       n.node(ComponentTypeSerializer.NBT_INTERPRET).raw(false);
       n.node(ComponentTypeSerializer.NBT_STORAGE).raw("adventure:purr");
     });
-    final Component component = Component.storageNBT()
+    final Component component = Component.storageNBTBuilder()
       .nbtPath("Kittens.Toes[0]")
       .interpret(false)
       .storage(Key.key("adventure", "purr"))
@@ -161,7 +161,7 @@ class ComponentSerializerTest implements ConfigurateTestBase {
         extra.appendListNode().node(ComponentTypeSerializer.KEYBIND).raw("minecraft.key.jump");
       });
     });
-    final Component component = Component.text().content("Hello")
+    final Component component = Component.textBuilder().content("Hello")
       .append(Component.translatable("adventure.world"))
       .append(Component.keybind("minecraft.key.jump"))
       .build();

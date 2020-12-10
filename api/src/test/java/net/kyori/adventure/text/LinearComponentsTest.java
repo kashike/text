@@ -55,18 +55,18 @@ class LinearComponentsTest {
   @Test
   void testSimpleText() {
     final Component c0 = Component.text("kittens", NamedTextColor.DARK_PURPLE);
-    assertEquals(c0, LinearComponents.linear(NamedTextColor.DARK_PURPLE, Component.text().content("kittens")));
+    assertEquals(c0, LinearComponents.linear(NamedTextColor.DARK_PURPLE, Component.textBuilder().content("kittens")));
   }
 
   @Test
   void testAdvancedText() {
-    final Component c0 = Component.text()
+    final Component c0 = Component.textBuilder()
       .append(Component.text("kittens", NamedTextColor.DARK_PURPLE))
       .append(Component.text("cats", Style.style(NamedTextColor.DARK_AQUA, TextDecoration.BOLD, HoverEvent.showText(Component.text("are adorable!")))))
       .build();
     assertEquals(c0, LinearComponents.linear(
-      NamedTextColor.DARK_PURPLE, Component.text().content("kittens"),
-      NamedTextColor.DARK_AQUA, TextDecoration.BOLD, HoverEvent.showText(Component.text("are adorable!")), Component.text().content("cats")
+      NamedTextColor.DARK_PURPLE, Component.textBuilder().content("kittens"),
+      NamedTextColor.DARK_AQUA, TextDecoration.BOLD, HoverEvent.showText(Component.text("are adorable!")), Component.textBuilder().content("cats")
     ));
   }
 }

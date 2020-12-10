@@ -135,10 +135,23 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Creates a block NBT component builder.
    *
    * @return a builder
-   * @since 4.0.0
+   * @since 4.4.0
    */
-  static BlockNBTComponent.@NonNull Builder blockNBT() {
+  static BlockNBTComponent.@NonNull Builder blockNBTBuilder() {
     return new BlockNBTComponentImpl.BuilderImpl();
+  }
+
+
+  /**
+   * Creates a block NBT component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   * @deprecated for removal since 4.4.0, see {@link #blockNBTBuilder()}
+   */
+  @Deprecated
+  static BlockNBTComponent.@NonNull Builder blockNBT() {
+    return blockNBTBuilder();
   }
 
   /**
@@ -149,7 +162,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   static @NonNull BlockNBTComponent blockNBT(final @NonNull Consumer<? super BlockNBTComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(blockNBT(), consumer);
+    return Buildable.configureAndBuild(blockNBTBuilder(), consumer);
   }
 
   /**
@@ -187,10 +200,22 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Creates an entity NBT component builder.
    *
    * @return a builder
-   * @since 4.0.0
+   * @since 4.4.0
    */
-  static EntityNBTComponent.@NonNull Builder entityNBT() {
+  static EntityNBTComponent.@NonNull Builder entityNBTBuilder() {
     return new EntityNBTComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates an entity NBT component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   * @deprecated for replacement since 4.4.0, use {@link #entityNBTBuilder()}
+   */
+  @Deprecated
+  static EntityNBTComponent.@NonNull Builder entityNBT() {
+    return entityNBTBuilder();
   }
 
   /**
@@ -201,7 +226,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   static @NonNull EntityNBTComponent entityNBT(final @NonNull Consumer<? super EntityNBTComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(entityNBT(), consumer);
+    return Buildable.configureAndBuild(entityNBTBuilder(), consumer);
   }
 
   /**
@@ -213,7 +238,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   static @NonNull EntityNBTComponent entityNBT(final @NonNull String nbtPath, final @NonNull String selector) {
-    return entityNBT().nbtPath(nbtPath).selector(selector).build();
+    return entityNBTBuilder().nbtPath(nbtPath).selector(selector).build();
   }
 
   /*
@@ -226,10 +251,22 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Creates a keybind component builder.
    *
    * @return a builder
-   * @since 4.0.0
+   * @since 4.4.0
    */
-  static KeybindComponent.@NonNull Builder keybind() {
+  static KeybindComponent.@NonNull Builder keybindBuilder() {
     return new KeybindComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a keybind component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   * @deprecated for removal since 4.4.0, use {@link #keybindBuilder()}
+   */
+  @Deprecated
+  static KeybindComponent.@NonNull Builder keybind() {
+    return keybindBuilder();
   }
 
   /**
@@ -240,7 +277,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   static @NonNull KeybindComponent keybind(final @NonNull Consumer<? super KeybindComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(keybind(), consumer);
+    return Buildable.configureAndBuild(keybindBuilder(), consumer);
   }
 
   /**
@@ -314,10 +351,22 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Creates a score component builder.
    *
    * @return a builder
-   * @since 4.0.0
+   * @since 4.4.0
    */
-  static ScoreComponent.@NonNull Builder score() {
+  static ScoreComponent.@NonNull Builder scoreBuilder() {
     return new ScoreComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a score component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   * @deprecated for removal since 4.4.0, use {@link #scoreBuilder()}.
+   */
+  @Deprecated
+  static ScoreComponent.@NonNull Builder score() {
+    return scoreBuilder();
   }
 
   /**
@@ -328,7 +377,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   static @NonNull ScoreComponent score(final @NonNull Consumer<? super ScoreComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(score(), consumer);
+    return Buildable.configureAndBuild(scoreBuilder(), consumer);
   }
 
   /**
@@ -366,10 +415,22 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Creates a selector component builder.
    *
    * @return a builder
-   * @since 4.0.0
+   * @since 4.4.0
    */
-  static SelectorComponent.@NonNull Builder selector() {
+  static SelectorComponent.@NonNull Builder selectorBuilder() {
     return new SelectorComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a selector component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   * @deprecated for removal since 4.4.0, use {@link #selectorBuilder()}
+   */
+  @Deprecated
+  static SelectorComponent.@NonNull Builder selector() {
+    return selectorBuilder();
   }
 
   /**
@@ -380,7 +441,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   static @NonNull SelectorComponent selector(final @NonNull Consumer<? super SelectorComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(selector(), consumer);
+    return Buildable.configureAndBuild(selectorBuilder(), consumer);
   }
 
   /**
@@ -404,10 +465,22 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Creates an storage NBT component builder.
    *
    * @return a builder
-   * @since 4.0.0
+   * @since 4.4.0
    */
-  static StorageNBTComponent.@NonNull Builder storageNBT() {
+  static StorageNBTComponent.@NonNull Builder storageNBTBuilder() {
     return new StorageNBTComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates an storage NBT component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   * @deprecated for removal since 4.4.0, use {@link #storageNBTBuilder()}
+   */
+  @Deprecated
+  static StorageNBTComponent.@NonNull Builder storageNBT() {
+    return storageNBTBuilder();
   }
 
   /**
@@ -456,10 +529,22 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Creates a text component builder.
    *
    * @return a builder
-   * @since 4.0.0
+   * @since 4.4.0
    */
-  static TextComponent.@NonNull Builder text() {
+  static TextComponent.@NonNull Builder textBuilder() {
     return new TextComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a text component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   * @deprecated for removal since 4.4.0, use {@link #textBuilder()}
+   */
+  @Deprecated
+  static TextComponent.@NonNull Builder text() {
+    return textBuilder();
   }
 
   /**
@@ -470,7 +555,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   static @NonNull TextComponent text(final @NonNull Consumer<? super TextComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(text(), consumer);
+    return Buildable.configureAndBuild(textBuilder(), consumer);
   }
 
   /**
@@ -913,10 +998,22 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * Creates a translatable component builder.
    *
    * @return a builder
-   * @since 4.0.0
+   * @since 4.4.0
    */
-  static TranslatableComponent.@NonNull Builder translatable() {
+  static TranslatableComponent.@NonNull Builder translatableBuilder() {
     return new TranslatableComponentImpl.BuilderImpl();
+  }
+
+  /**
+   * Creates a translatable component builder.
+   *
+   * @return a builder
+   * @since 4.0.0
+   * @deprecated for removal since 4.4.0, use {@link #translatableBuilder()}
+   */
+  @Deprecated
+  static TranslatableComponent.@NonNull Builder translatable() {
+    return translatableBuilder();
   }
 
   /**
@@ -927,7 +1024,7 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @since 4.0.0
    */
   static @NonNull TranslatableComponent translatable(final @NonNull Consumer<? super TranslatableComponent.Builder> consumer) {
-    return Buildable.configureAndBuild(translatable(), consumer);
+    return Buildable.configureAndBuild(translatableBuilder(), consumer);
   }
 
   /**

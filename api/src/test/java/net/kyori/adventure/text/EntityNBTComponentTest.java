@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class EntityNBTComponentTest extends AbstractNBTComponentTest<EntityNBTComponent, EntityNBTComponent.Builder> {
   @Override
   EntityNBTComponent.Builder builder() {
-    return Component.entityNBT().nbtPath("abc").selector("def");
+    return Component.entityNBTBuilder().nbtPath("abc").selector("def");
   }
 
   @Test

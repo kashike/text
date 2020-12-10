@@ -222,17 +222,17 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
             if(reset) {
               parts.add(current.build());
               reset = false;
-              current = Component.text();
+              current = Component.textBuilder();
             } else {
-              current = Component.text().append(current.build());
+              current = Component.textBuilder().append(current.build());
             }
           } else {
-            current = Component.text();
+            current = Component.textBuilder();
           }
 
           current.content(input.substring(from, pos));
         } else if(current == null) {
-          current = Component.text();
+          current = Component.textBuilder();
         }
 
         if(!reset) {
@@ -259,7 +259,7 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
       return this.extractUrl(parts.get(0));
     } else {
       Collections.reverse(parts);
-      return this.extractUrl(Component.text().content(remaining).append(parts).build());
+      return this.extractUrl(Component.textBuilder().content(remaining).append(parts).build());
     }
   }
 

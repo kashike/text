@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class TranslatableComponentTest extends AbstractComponentTest<TranslatableComponent, TranslatableComponent.Builder> {
   @Override
   TranslatableComponent.Builder builder() {
-    return Component.translatable().key("multiplayer.player.left");
+    return Component.translatableBuilder().key("multiplayer.player.left");
   }
 
   @Test
@@ -88,7 +88,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
   @Test
   void testContains() {
     final Component child = Component.translatable("multiplayer.player.left");
-    final Component component = Component.translatable()
+    final Component component = Component.translatableBuilder()
       .key("multiplayer.player.left")
       .append(child)
       .build();
@@ -123,9 +123,9 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testBuilderArgs_singleBuilder() {
-    final TranslatableComponent c0 = Component.translatable()
+    final TranslatableComponent c0 = Component.translatableBuilder()
       .key("multiplayer.player.left")
-      .args(Component.text().content("kashike"))
+      .args(Component.textBuilder().content("kashike"))
       .build();
     assertThat(c0.args()).hasSize(1);
     assertThat(c0.args()).containsExactly(Component.text("kashike")).inOrder();
@@ -133,7 +133,7 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testBuilderArgs_singleComponent() {
-    final TranslatableComponent c0 = Component.translatable()
+    final TranslatableComponent c0 = Component.translatableBuilder()
       .key("multiplayer.player.left")
       .args(Component.text("kashike"))
       .build();
@@ -143,11 +143,11 @@ class TranslatableComponentTest extends AbstractComponentTest<TranslatableCompon
 
   @Test
   void testBuilderArgs_multiple() {
-    final TranslatableComponent c0 = Component.translatable()
+    final TranslatableComponent c0 = Component.translatableBuilder()
       .key("multiplayer.player.left")
       .args(
-        Component.text().content("kashike"),
-        Component.text().content("lucko")
+        Component.textBuilder().content("kashike"),
+        Component.textBuilder().content("lucko")
       )
       .build();
     assertThat(c0.args()).hasSize(2);

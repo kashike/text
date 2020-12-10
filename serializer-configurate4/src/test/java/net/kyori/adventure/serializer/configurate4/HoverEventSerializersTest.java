@@ -46,7 +46,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
         });
       });
     });
-    final Component component = Component.text().content("kashike")
+    final Component component = Component.textBuilder().content("kashike")
       .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.key("minecraft:cat"), UUID.fromString("eb121687-8b1a-4944-bd4d-e0a818d9dfe2"))))
       .build();
 
@@ -66,7 +66,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
         });
       });
     });
-    final Component component = Component.text().content("kashike")
+    final Component component = Component.textBuilder().content("kashike")
       .hoverEvent(HoverEvent.showEntity(HoverEvent.ShowEntity.of(Key.key("minecraft:cat"), UUID.fromString("eb121687-8b1a-4944-bd4d-e0a818d9dfe2"), Component.text("meow"))))
       .build();
 
@@ -91,7 +91,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
         });
       });
     });
-    final Component component = Component.text().content("[")
+    final Component component = Component.textBuilder().content("[")
       .color(NamedTextColor.AQUA)
       .append(Component.translatable("item.minecraft.purple_wool"))
       .append(Component.text("]"))
@@ -118,7 +118,7 @@ class HoverEventSerializersTest implements ConfigurateTestBase {
         });
       });
     });
-    final Component component = Component.text().content("[")
+    final Component component = Component.textBuilder().content("[")
       .color(NamedTextColor.AQUA)
       .append(Component.translatable("item.minecraft.purple_wool"))
       .append(Component.text("]"))

@@ -90,7 +90,7 @@ class TranslationRegistryTest {
     assertEquals(
       Component.text("This is a test.", NamedTextColor.YELLOW),
       RENDERER.render(
-        Component.translatable()
+        Component.translatableBuilder()
           .key("test")
           .color(NamedTextColor.YELLOW)
           .build(),
@@ -102,7 +102,7 @@ class TranslationRegistryTest {
   @Test
   void testRender_complex() {
     assertEquals(
-      Component.text().content("")
+      Component.textBuilder().content("")
         .color(NamedTextColor.YELLOW)
         .append(Component.text("kashike"))
         .append(Component.text(" and '"))
@@ -110,7 +110,7 @@ class TranslationRegistryTest {
         .append(Component.text("' are cats."))
         .build(),
       RENDERER.render(
-        Component.translatable()
+        Component.translatableBuilder()
           .key("cats")
           .args(
             Component.text("kashike"),
@@ -126,7 +126,7 @@ class TranslationRegistryTest {
   @Test
   void testRender_veryComplex() {
     assertEquals(
-      Component.text().content("")
+      Component.textBuilder().content("")
         .color(NamedTextColor.YELLOW)
         .append(
           Component.text("This is a test.")
@@ -144,14 +144,14 @@ class TranslationRegistryTest {
         )
         .build(),
       RENDERER.render(
-        Component.text()
+        Component.textBuilder()
           .content("")
           .append(
             Component.translatable("test")
               .append(Component.text("I promise."))
           )
           .append(
-            Component.translatable()
+            Component.translatableBuilder()
               .key("cats")
               .args(
                 Component.text("kashike"),

@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class ScoreComponentTest extends AbstractComponentTest<ScoreComponent, ScoreComponent.Builder> {
   @Override
   ScoreComponent.Builder builder() {
-    return Component.score().name("test").objective("test");
+    return Component.scoreBuilder().name("test").objective("test");
   }
 
   @Test

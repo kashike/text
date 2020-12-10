@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class BlockNBTComponentTest extends AbstractNBTComponentTest<BlockNBTComponent, BlockNBTComponent.Builder> {
   @Override
   BlockNBTComponent.Builder builder() {
-    return Component.blockNBT().nbtPath("abc").absoluteWorldPos(1, 2, 3);
+    return Component.blockNBTBuilder().nbtPath("abc").absoluteWorldPos(1, 2, 3);
   }
 
   @Test
