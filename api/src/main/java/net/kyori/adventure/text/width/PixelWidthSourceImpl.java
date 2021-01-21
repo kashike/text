@@ -159,8 +159,6 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
   /**
    * Creates a pixel width source with a function used for getting a {@link CharToIntFunction}.
-   * By default the function used always returns a {@link CharToIntFunction} calculating for the standard minecraft
-   * font.
    *
    * <p>Any {@link CharToIntFunction} returned by the function should accept at least all
    * english alphanumerics and most punctuation and handle {@link TextDecoration#BOLD} in the style.
@@ -227,7 +225,6 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
       }
     }
 
-    //TODO correct exception??
     throw new UnsupportedOperationException("Invalid Component");
 
   }
