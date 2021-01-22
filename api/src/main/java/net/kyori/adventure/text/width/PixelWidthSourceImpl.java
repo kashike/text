@@ -48,7 +48,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import static net.kyori.adventure.text.Component.text;
@@ -197,7 +196,6 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
   @SuppressWarnings(value="unchecked")
   @Override
   public <CO extends Component> void addResolver(final @NonNull Class<CO> resolveFor, final @NonNull ComponentResolver<CO, CX> resolver) {
-
     if(resolveFor.isAssignableFrom(TextComponent.class)) {
       throw new UnsupportedOperationException("Can not add custom resolver for TextComponents");
     } else if(resolveFor.isAssignableFrom(TranslatableComponent.class)) {
@@ -226,7 +224,6 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
     }
 
     throw new UnsupportedOperationException("Invalid Component");
-
   }
 
   /**
@@ -239,21 +236,20 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
     final TextComponent rendered = this.renderer.render(component, context);
 
-    return new HashMap<>(this.flattenComponents(rendered));
+    return this.flattenComponents(rendered, new HashMap<>());
   }
 
   /**
    * Flattens a {@link TextComponent} and <em>all</em> it's {@link TextComponent} children,
    * wherever they are, into a map where the content and style of each component is linked together.
    */
-  private Map<String, Style> flattenComponents(final @NonNull TextComponent parent){
+  private Map<String, Style> flattenComponents(final @NonNull TextComponent parent, final @NonNull Map<String, Style> map){
     //By this point, we know that all components in this component tree are TextComponents,
     //so some casting is acceptable
-    final Map<String, Style> map = new HashMap<>();
     map.put(parent.content(), parent.style());
     for(final Component child : parent.children()) {
       map.put(((TextComponent) child).content(), child.style());
-      map.putAll(this.flattenComponents((TextComponent) child));
+      map.putAll(this.flattenComponents((TextComponent) child, map));
     }
 
     return map;
@@ -343,14 +339,14 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
     }
 
     //null -> unsuccessful
-    private <CO extends Component> @Nullable TextComponent renderUsingResolver(final @NonNull Set<ComponentResolver<CO, CX>> resolvers, final @NonNull CO component, final @NonNull CX context){
-      final AtomicReference<TextComponent> result = new AtomicReference<>(null);
-      resolvers.forEach(r -> {
-        final @Nullable TextComponent rendered = r.resolve(component, context);
-        if(rendered != null) result.set(rendered);
-      });
+    private <CO extends Component> @Nullable TextComponent renderUsingResolver(final @NonNull Set<ComponentResolver<CO, CX>> resolvers, final @NonNull CO component, final @NonNull CX context) {
+      TextComponent result = null;
+      for(final ComponentResolver<CO, CX> resolver : resolvers){
+        final @Nullable TextComponent rendered = resolver.resolve(component, context);
+        if(rendered != null) result = rendered;
+      }
 
-      return result.get();
+      return result;
     }
 
     private @NonNull TextComponent mergeStylesDownwards(final @NonNull Component parent){
