@@ -34,7 +34,7 @@ class DummyContext {
   private final @NonNull Locale locale;
   private final @NonNull Map<String, String> keybinds = new HashMap<>();
 
-  DummyContext(final @NotNull Locale locale){
+  DummyContext(final @NotNull Locale locale) {
     this.locale = locale;
 
     this.keybinds.put("key.jump", "spacebar");

@@ -53,7 +53,7 @@ public interface PixelWidthSource<CX> {
    * @return a pixel width source using a {@link PixelWidthSourceImpl#DEFAULT_FONT_WIDTH character function} for the default minecraft font
    * @since 4.5.0
    */
-  static <CX> @NonNull PixelWidthSource<CX> defaultPixelWidth(final @NonNull Function<CX, Locale> localeFunction){
+  static <CX> @NonNull PixelWidthSource<CX> defaultPixelWidth(final @NonNull Function<CX, Locale> localeFunction) {
     return new PixelWidthSourceImpl<>(cx -> PixelWidthSourceImpl.DEFAULT_FONT_WIDTH, localeFunction);
   }
 
@@ -65,7 +65,7 @@ public interface PixelWidthSource<CX> {
    * @return a pixel width source using a custom character function
    * @since 4.5.0
    */
-  static <CX> @NonNull PixelWidthSource<CX> withCustomCharacterFunction(final @NonNull Function<CX, CharacterWidthFunction> function, final @NonNull Function<CX, Locale> localeFunction){
+  static <CX> @NonNull PixelWidthSource<CX> withCustomCharacterFunction(final @NonNull Function<CX, CharacterWidthFunction> function, final @NonNull Function<CX, Locale> localeFunction) {
     return new PixelWidthSourceImpl<>(function, localeFunction);
   }
 

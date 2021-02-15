@@ -59,7 +59,7 @@ public class PixelWidthSourceTest {
 
   private final Style bold = style(TextDecoration.BOLD);
 
-  static{
+  static {
     final Map<String, MessageFormat> translations = new HashMap<>();
     translations.put("dummy.welcome", new MessageFormat("Welcome {0}!"));
     translations.put("dummy.news", new MessageFormat("News: {0}"));
@@ -72,7 +72,7 @@ public class PixelWidthSourceTest {
   }
 
   @Test
-  public void testDefaultSimpleWidth(){
+  public void testDefaultSimpleWidth() {
     assertEquals(21, this.defaultPixelWidth.width("wowie", empty(), this.context));
     assertEquals(5, this.defaultPixelWidth.width(text(2), this.context));
     assertEquals(6, this.defaultPixelWidth.width('@', empty(), this.context));
@@ -80,18 +80,18 @@ public class PixelWidthSourceTest {
   }
 
   @Test
-  public void testDefaultWidthBold(){
+  public void testDefaultWidthBold() {
     assertEquals(26, this.defaultPixelWidth.width(text("wowie", this.bold), this.context));
     assertEquals(7, this.defaultPixelWidth.width('@', this.bold, this.context));
   }
 
   @Test
-  public void testWidthInheritedStyle(){
+  public void testWidthInheritedStyle() {
     assertEquals(33, this.defaultPixelWidth.width(text("wowie", this.bold).append(text('@')), this.context));
   }
 
   @Test
-  public void testWidthChildrenAndArgs(){
+  public void testWidthChildrenAndArgs() {
     final Component component0 = text("kashike", this.bold); //29 + (1*7)
     final Component component1 = translatable("dummy.welcome", component0); //36 + 36
     final Component component2 = translatable("dummy.level", text("electroid", style(TextDecoration.ITALIC))).decoration(TextDecoration.BOLD, false); //96 + 36
@@ -107,7 +107,7 @@ public class PixelWidthSourceTest {
   }
 
   @Test
-  public void testWidthCustomResolver(){
+  public void testWidthCustomResolver() {
     this.defaultPixelWidth.addResolver(KeybindComponent.class, (co, d) -> {
       final String keybind = this.context.keybinds().get(co.keybind());
       if(keybind != null) return text(keybind);
@@ -117,7 +117,7 @@ public class PixelWidthSourceTest {
   }
 
   @Test
-  public void testWidthMultipleCustomResolvers(){
+  public void testWidthMultipleCustomResolvers() {
     this.defaultPixelWidth.addResolver(ScoreComponent.class, (co, d) -> {
       final String value = co.value();
       return value != null ? text(value) : null;
@@ -130,12 +130,12 @@ public class PixelWidthSourceTest {
   }
 
   @Test
-  public void testAddTextResolver(){
+  public void testAddTextResolver() {
     assertThrows(UnsupportedOperationException.class, () -> this.defaultPixelWidth.addResolver(TextComponent.class, (co, d) -> text("insert")));
   }
 
   @Test
-  public void testWidthUsingCustomCharacterFunction(){
+  public void testWidthUsingCustomCharacterFunction() {
     final PixelWidthSource<DummyContext> custom = PixelWidthSource.withCustomCharacterFunction(d -> new CustomFontCharacterWidthFunction(), DummyContext::locale);
     assertEquals(17, custom.width(text("aA1 ").append(text("2", NamedTextColor.RED, TextDecoration.OBFUSCATED)), this.context));
   }
