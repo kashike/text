@@ -37,7 +37,6 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.adventure.translation.GlobalTranslator;
-import net.kyori.adventure.util.CharToIntFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -72,14 +71,14 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
   private final PixelWidthRenderer renderer = new PixelWidthRenderer();
 
-  private final Function<CX, CharToIntFunction<Style>> function;
+  private final Function<CX, CharacterWidthFunction> function;
   private final Function<CX, Locale> localeFunction;
 
   /**
    * Get the pixel width of the given character in the Minecraft font, excluding the space between
    * characters and drop shadow. Handles alphanumerics and most common english punctuation.
    */
-  static final CharToIntFunction<Style> DEFAULT_FONT_WIDTH = (c, style) -> {
+  static final CharacterWidthFunction DEFAULT_FONT_WIDTH = (c, style) -> {
     int i;
     if(Character.isUpperCase(c)) {
       i = c == 'I' ? 3 : 5;
@@ -157,16 +156,16 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
   };
 
   /**
-   * Creates a pixel width source with a function used for getting a {@link CharToIntFunction}.
+   * Creates a pixel width source with a function used for getting a {@link CharacterWidthFunction}.
    *
-   * <p>Any {@link CharToIntFunction} returned by the function should accept at least all
+   * <p>Any {@link CharacterWidthFunction} returned by the function should accept at least all
    * english alphanumerics and most punctuation and handle {@link TextDecoration#BOLD} in the style.
    * See {@link PixelWidthSourceImpl#DEFAULT_FONT_WIDTH} for an example.</p>
    *
-   * @param function a function that can provide a {@link CharToIntFunction} given a context
+   * @param function a function that can provide a {@link CharacterWidthFunction} given a context
    * @since 4.5.0
    */
-  PixelWidthSourceImpl(final @NonNull Function<CX, CharToIntFunction<Style>> function, final @NonNull Function<CX, Locale> localeFunction){
+  PixelWidthSourceImpl(final @NonNull Function<CX, CharacterWidthFunction> function, final @NonNull Function<CX, Locale> localeFunction){
     this.function = function;
     this.localeFunction = localeFunction;
   }

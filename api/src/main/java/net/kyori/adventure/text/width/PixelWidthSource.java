@@ -27,7 +27,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.translation.GlobalTranslator;
-import net.kyori.adventure.util.CharToIntFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.ApiStatus;
@@ -66,7 +65,7 @@ public interface PixelWidthSource<CX> {
    * @return a pixel width source using a custom character function
    * @since 4.5.0
    */
-  static <CX> @NonNull PixelWidthSource<CX> withCustomCharacterFunction(final @NonNull Function<CX, CharToIntFunction<Style>> function, final @NonNull Function<CX, Locale> localeFunction){
+  static <CX> @NonNull PixelWidthSource<CX> withCustomCharacterFunction(final @NonNull Function<CX, CharacterWidthFunction> function, final @NonNull Function<CX, Locale> localeFunction){
     return new PixelWidthSourceImpl<>(function, localeFunction);
   }
 

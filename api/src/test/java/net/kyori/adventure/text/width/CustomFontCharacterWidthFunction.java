@@ -25,10 +25,9 @@ package net.kyori.adventure.text.width;
 
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.util.CharToIntFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public class CustomFontCharToIntFunction implements CharToIntFunction<Style> {
+public class CustomFontCharacterWidthFunction implements CharacterWidthFunction {
   @Override
   public int applyAsInt(final char c, final @NonNull Style style) {
     if(Character.isLowerCase(c)) return 3;

@@ -136,7 +136,7 @@ public class PixelWidthSourceTest {
 
   @Test
   public void testWidthUsingCustomCharacterFunction(){
-    final PixelWidthSource<DummyContext> custom = PixelWidthSource.withCustomCharacterFunction(d -> new CustomFontCharToIntFunction(), DummyContext::locale);
+    final PixelWidthSource<DummyContext> custom = PixelWidthSource.withCustomCharacterFunction(d -> new CustomFontCharacterWidthFunction(), DummyContext::locale);
     assertEquals(17, custom.width(text("aA1 ").append(text("2", NamedTextColor.RED, TextDecoration.OBFUSCATED)), this.context));
   }
 

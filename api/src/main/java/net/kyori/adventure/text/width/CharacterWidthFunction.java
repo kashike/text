@@ -21,21 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.util;
+package net.kyori.adventure.text.width;
+
+import net.kyori.adventure.text.format.Style;
 
 /**
- * A function that takes a {@code char} and a value {@code U} as input and produces an {@code int}.
+ * A function that takes a {@code char} and a {@link Style} as input and produces an {@code int}.
  *
  * @since 4.4.0
  */
 
 @FunctionalInterface
-public interface CharToIntFunction<U> {
+public interface CharacterWidthFunction {
 
   /**
    * Applies this function to the given argument.
    *
    * @since 4.4.0
    */
-  int applyAsInt(char c, U u);
+  int applyAsInt(char c, Style style);
 }
