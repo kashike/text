@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 
 /**
@@ -295,7 +296,7 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
       final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.blockNBTResolvers, component0, context);
 
-      return rendered != null ? rendered : text(component.pos().asString(), component0.style()).children(component0.children());
+      return rendered != null ? rendered : empty().children(component0.children());
     }
 
     @Override
@@ -304,7 +305,7 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
       final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.entityNBTResolvers, component0, context);
 
-      return rendered != null ? rendered : text(component.selector(), component0.style()).children(component0.children());
+      return rendered != null ? rendered : empty().children(component0.children());
     }
 
     @Override
@@ -313,7 +314,7 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
       final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.storageNBTResolvers, component0, context);
 
-      return rendered != null ? rendered : text(component.storage().asString(), component0.style()).children(component0.children());
+      return rendered != null ? rendered : empty().children(component0.children());
     }
 
     @Override
@@ -329,9 +330,12 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
     protected @NonNull TextComponent renderScore(final @NonNull ScoreComponent component, final @NonNull CX context) {
       final ScoreComponent component0 = (ScoreComponent) super.renderScore(component, context);
 
+      final String value = component.value(); //If value is present it overrides any other potential score
+      if(value != null) return text(value, component0.style()).children(component0.children());
+
       final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.scoreResolvers, component, context);
 
-      return rendered != null ? rendered : text(component.name() + "_" + component.objective() + "_" + component.value(), component0.style()).children(component0.children());
+      return rendered != null ? rendered : empty().children(component0.children());
     }
 
     @Override
@@ -340,7 +344,7 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
       final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.selectorResolvers, component, context);
 
-      return rendered != null ? rendered : text(component.pattern(), component0.style()).children(component0.children());
+      return rendered != null ? rendered : empty().children(component0.children());
     }
 
     @Override
