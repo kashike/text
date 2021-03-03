@@ -31,10 +31,8 @@ import net.kyori.adventure.text.format.Style;
  *
  * @since 4.7.0
  */
-
 @FunctionalInterface
 public interface CharacterWidthFunction {
-
   /**
    * Gets the width for the given character(represented by its UTF-16 codepoint). {@code char}s will
    * automatically be converted to codepoints.
