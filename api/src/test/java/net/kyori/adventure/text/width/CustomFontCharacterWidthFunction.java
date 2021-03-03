@@ -29,11 +29,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class CustomFontCharacterWidthFunction implements CharacterWidthFunction {
   @Override
-  public int applyAsInt(final char c, final @NonNull Style style) {
-    if(Character.isLowerCase(c)) return 3;
-    if(Character.isUpperCase(c)) return 5;
-    if(Character.isDigit(c)) return style.hasDecoration(TextDecoration.OBFUSCATED) ? 4 : 3;
-    if(Character.isSpaceChar(c)) return 2;
+  public int widthOf(final int codepoint, final @NonNull Style style) {
+    if(Character.isLowerCase(codepoint)) return 3;
+    if(Character.isUpperCase(codepoint)) return 5;
+    if(Character.isDigit(codepoint)) return style.hasDecoration(TextDecoration.OBFUSCATED) ? 4 : 3;
+    if(Character.isSpaceChar(codepoint)) return 2;
     return 0;
   }
 }

@@ -46,7 +46,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static net.kyori.adventure.text.Component.text;
@@ -78,14 +77,14 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
    * Get the pixel width of the given character in the Minecraft font, excluding the space between
    * characters and drop shadow. Handles alphanumerics and most common english punctuation.
    */
-  static final CharacterWidthFunction DEFAULT_FONT_WIDTH = (c, style) -> {
+  static final CharacterWidthFunction DEFAULT_FONT_WIDTH = (codepoint, style) -> {
     int i;
-    if(Character.isUpperCase(c)) {
-      i = c == 'I' ? 3 : 5;
-    } else if(Character.isDigit(c)) {
+    if(Character.isUpperCase(codepoint)) {
+      i = codepoint == 'I' ? 3 : 5;
+    } else if(Character.isDigit(codepoint)) {
       i = 5;
-    } else if(Character.isLowerCase(c)) {
-      switch (c) {
+    } else if(Character.isLowerCase(codepoint)) {
+      switch (codepoint) {
         case 'i':
           i = 1;
           break;
@@ -108,7 +107,7 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
           break;
       }
     } else {
-      switch (c) {
+      switch (codepoint) {
         case '!':
         case '.':
         case ',':
@@ -173,23 +172,44 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
   @Override
   public int width(final @NonNull Component component, final @NonNull CX context) {
     final Map<String, Style> map = this.serialize(component, context);
-    final AtomicInteger length = new AtomicInteger(0);
+    int length = 0;
 
-    map.forEach((string, style) -> string.chars().forEach(c -> length.getAndAdd(this.width((char) c, style, context))));
+    for(final Map.Entry<String, Style> entry : map.entrySet()) {
+      length += this.width(entry.getKey(), entry.getValue(), context);
+    }
 
-    return length.get();
+    return length;
   }
 
   @Override
   public int width(final @NonNull String string, final @NonNull Style style, final @NonNull CX context) {
     int length = 0;
-    for(final char c : string.toCharArray()) length += this.width(c, style, context);
+
+    final char[] chars = string.toCharArray();
+    for(int i = 0; i < chars.length; i++) {
+      final char c = chars[i];
+
+      if(Character.isLowSurrogate(c)) continue; //this character was handled on the previous iteration
+
+      final int codepoint;
+      if(Character.isHighSurrogate(c)) {
+        codepoint = Character.codePointAt(chars, i);
+      } else codepoint = c;
+
+      length += this.width(codepoint, style, context);
+    }
+
     return length;
   }
 
   @Override
   public int width(final char c, final @NonNull Style style, final @NonNull CX context) {
-    return this.function.apply(context).applyAsInt(c, style);
+    return this.function.apply(context).widthOf(c, style);
+  }
+
+  @Override
+  public int width(final int codepoint, final @NonNull Style style, final @NonNull CX context) {
+    return this.function.apply(context).widthOf(codepoint, style);
   }
 
   @SuppressWarnings(value = "unchecked")

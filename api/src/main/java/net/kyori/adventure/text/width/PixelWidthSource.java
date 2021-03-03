@@ -102,6 +102,17 @@ public interface PixelWidthSource<CX> {
   int width(final char character, final @NonNull Style style, final @NonNull CX context);
 
   /**
+   * Calculates the pixel width of a character represented by a codepoint, given a context.
+   *
+   * @param codepoint a codepoint representing a character
+   * @param style the style of the character
+   * @param context the context of this calculation
+   * @return the pixel width of the character
+   * @since 4.5.0
+   */
+  int width(final int codepoint, final @NonNull Style style, final @NonNull CX context);
+
+  /**
    * Add a {@link ComponentResolver} to this source that can resolve a specific type of component given a context.
    * Whenever a component is resolved successfully the result is used regardless of if other resolvers are able to resolve as well.
    *

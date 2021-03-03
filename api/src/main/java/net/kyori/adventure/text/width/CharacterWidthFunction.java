@@ -26,7 +26,8 @@ package net.kyori.adventure.text.width;
 import net.kyori.adventure.text.format.Style;
 
 /**
- * A function that takes a {@code char} and a {@link Style} as input and produces an {@code int}.
+ * A function that takes a character(represented by its UTF-16 codepoint) and a {@link Style} and returns
+ * the characters width as an {@code int}.
  *
  * @since 4.4.0
  */
@@ -35,9 +36,10 @@ import net.kyori.adventure.text.format.Style;
 public interface CharacterWidthFunction {
 
   /**
-   * Applies this function to the given argument.
+   * Gets the width for the given character(represented by its UTF-16 codepoint). {@code char}s will
+   * automatically be converted to codepoints.
    *
    * @since 4.4.0
    */
-  int applyAsInt(char c, Style style);
+  int widthOf(int codepoint, Style style);
 }
