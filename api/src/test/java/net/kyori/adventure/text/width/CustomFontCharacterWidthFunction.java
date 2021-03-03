@@ -34,6 +34,7 @@ public class CustomFontCharacterWidthFunction implements CharacterWidthFunction 
     if(Character.isUpperCase(codepoint)) return 5;
     if(Character.isDigit(codepoint)) return style.hasDecoration(TextDecoration.OBFUSCATED) ? 4 : 3;
     if(Character.isSpaceChar(codepoint)) return 2;
+    if(codepoint == 65938) return 8; //𐆒
     return 0;
   }
 }

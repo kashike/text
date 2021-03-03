@@ -140,4 +140,10 @@ public class PixelWidthSourceTest {
     assertEquals(17, custom.width(text("aA1 ").append(text("2", NamedTextColor.RED, TextDecoration.OBFUSCATED)), this.context));
   }
 
+  @Test
+  public void testWidthNonBMPCharacter() {
+    final PixelWidthSource<DummyContext> custom = PixelWidthSource.withCustomCharacterFunction(d -> new CustomFontCharacterWidthFunction(), DummyContext::locale);
+    assertEquals(8, custom.width(text("\uD800\uDD92"), this.context)); // 𐆒
+  }
+
 }
