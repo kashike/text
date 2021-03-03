@@ -55,7 +55,7 @@ import static net.kyori.adventure.text.Component.text;
  * for resolving all components except {@link TextComponent}s.
  *
  * @param <CX> a context (player, server, locale)
- * @since 4.5.0
+ * @since 4.7.0
  */
 
 class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
@@ -249,7 +249,7 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
    * Serializes using the renderer.
    *
    * @param component the component
-   * @since 4.5.0
+   * @since 4.7.0
    */
   private Map<String, Style> serialize(final @NonNull Component component, final @NonNull CX context) {
 

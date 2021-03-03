@@ -40,7 +40,7 @@ import java.util.function.Function;
  *
  * @param <CX> a context (player, server, locale)
  * @see #addResolver(Class, ComponentResolver)
- * @since 4.5.0
+ * @since 4.7.0
  */
 @ApiStatus.NonExtendable
 public interface PixelWidthSource<CX> {
@@ -51,7 +51,7 @@ public interface PixelWidthSource<CX> {
    * @param <CX> the context for this pixel width source(e.g player, world, locale)
    * @param localeFunction used for automatic server-side translations using the {@link GlobalTranslator}
    * @return a pixel width source using a {@link PixelWidthSourceImpl#DEFAULT_FONT_WIDTH character function} for the default minecraft font
-   * @since 4.5.0
+   * @since 4.7.0
    */
   static <CX> @NonNull PixelWidthSource<CX> defaultPixelWidth(final @NonNull Function<CX, Locale> localeFunction) {
     return new PixelWidthSourceImpl<>(cx -> PixelWidthSourceImpl.DEFAULT_FONT_WIDTH, localeFunction);
@@ -63,7 +63,7 @@ public interface PixelWidthSource<CX> {
    * @param <CX> the context for this pixel width source(e.g player, world, locale)
    * @param localeFunction used for automatic server-side translations using the {@link GlobalTranslator}
    * @return a pixel width source using a custom character function
-   * @since 4.5.0
+   * @since 4.7.0
    */
   static <CX> @NonNull PixelWidthSource<CX> withCustomCharacterFunction(final @NonNull Function<CX, CharacterWidthFunction> function, final @NonNull Function<CX, Locale> localeFunction) {
     return new PixelWidthSourceImpl<>(function, localeFunction);
@@ -75,7 +75,7 @@ public interface PixelWidthSource<CX> {
    * @param component a component
    * @param context the context of this calculation
    * @return the pixel width of the component
-   * @since 4.5.0
+   * @since 4.7.0
    */
   int width(final @NonNull Component component, final @NonNull CX context);
 
@@ -86,7 +86,7 @@ public interface PixelWidthSource<CX> {
    * @param style the style of the string
    * @param context the context of this calculation
    * @return the pixel width of the string
-   * @since 4.5.0
+   * @since 4.7.0
    */
   int width(final @NonNull String string, final @NonNull Style style, final @NonNull CX context);
 
@@ -97,7 +97,7 @@ public interface PixelWidthSource<CX> {
    * @param style the style of the character
    * @param context the context of this calculation
    * @return the pixel width of the character
-   * @since 4.5.0
+   * @since 4.7.0
    */
   int width(final char character, final @NonNull Style style, final @NonNull CX context);
 
@@ -108,7 +108,7 @@ public interface PixelWidthSource<CX> {
    * @param style the style of the character
    * @param context the context of this calculation
    * @return the pixel width of the character
-   * @since 4.5.0
+   * @since 4.7.0
    */
   int width(final int codepoint, final @NonNull Style style, final @NonNull CX context);
 
@@ -119,7 +119,7 @@ public interface PixelWidthSource<CX> {
    * @param resolveFor the component type this resolver accepts
    * @param resolver the resolver
    * @see ComponentResolver
-   * @since 4.5.0
+   * @since 4.7.0
    */
   <CO extends Component> void addResolver(final @NonNull Class<CO> resolveFor, final @NonNull ComponentResolver<CO, CX> resolver);
 
@@ -127,7 +127,7 @@ public interface PixelWidthSource<CX> {
    * Something that can either resolve a {@link Component} into a {@link TextComponent}, or return {@code null} if not possible.
    *
    * @param <CX> a context (player, server, locale)
-   * @since 4.5.0
+   * @since 4.7.0
    */
   interface ComponentResolver<CO extends Component, CX> {
 
@@ -141,7 +141,7 @@ public interface PixelWidthSource<CX> {
      * @param component the component to resolve
      * @param context a context
      * @return The attempted resolve of the component
-     * @since 4.5.0
+     * @since 4.7.0
      */
     @Nullable TextComponent resolve(final @NonNull CO component, final @NonNull CX context);
   }
