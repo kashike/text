@@ -23,33 +23,18 @@
  */
 package net.kyori.adventure.text.width;
 
-import net.kyori.adventure.text.BlockNBTComponent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.EntityNBTComponent;
-import net.kyori.adventure.text.KeybindComponent;
-import net.kyori.adventure.text.NBTComponent;
-import net.kyori.adventure.text.ScoreComponent;
-import net.kyori.adventure.text.SelectorComponent;
-import net.kyori.adventure.text.StorageNBTComponent;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
+import net.kyori.adventure.text.flattener.FlattenerListener;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
-import net.kyori.adventure.translation.GlobalTranslator;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-
-import static net.kyori.adventure.text.Component.empty;
-import static net.kyori.adventure.text.Component.text;
 
 /**
  * An implementation of the pixel width source which handles serialization with a set of functions
@@ -61,18 +46,10 @@ import static net.kyori.adventure.text.Component.text;
 
 class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
-  private final Set<ComponentResolver<KeybindComponent, CX>> keybindResolvers = new HashSet<>();
-  private final Set<ComponentResolver<SelectorComponent, CX>> selectorResolvers = new HashSet<>();
-  private final Set<ComponentResolver<ScoreComponent, CX>> scoreResolvers = new HashSet<>();
-  private final Set<ComponentResolver<BlockNBTComponent, CX>> blockNBTResolvers = new HashSet<>();
-  private final Set<ComponentResolver<EntityNBTComponent, CX>> entityNBTResolvers = new HashSet<>();
-  private final Set<ComponentResolver<StorageNBTComponent, CX>> storageNBTResolvers = new HashSet<>();
-  private final Set<ComponentResolver<TranslatableComponent, CX>> translatableResolvers = new HashSet<>();
+  static final PixelWidthSource<Object> BASIC = new BuilderImpl<Object>().build(); //Context does not matter since its never used
 
-  private final PixelWidthRenderer renderer = new PixelWidthRenderer();
-
-  private final Function<CX, CharacterWidthFunction> function;
-  private final Function<CX, Locale> localeFunction;
+  private final ComponentFlattener flattener;
+  private final Function<CX, CharacterWidthFunction> characterWidthFunction;
 
   /**
    * Get the pixel width of the given character in the Minecraft font, excluding the space between
@@ -162,24 +139,49 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
    * english alphanumerics and most punctuation and handle {@link TextDecoration#BOLD} in the style.
    * See {@link PixelWidthSourceImpl#DEFAULT_FONT_WIDTH} for an example.</p>
    *
-   * @param function a function that can provide a {@link CharacterWidthFunction} given a context
+   * @param characterWidthFunction a function that can provide a {@link CharacterWidthFunction} given a context
    * @since 4.5.0
    */
-  PixelWidthSourceImpl(final @NonNull Function<CX, CharacterWidthFunction> function, final @NonNull Function<CX, Locale> localeFunction) {
-    this.function = function;
-    this.localeFunction = localeFunction;
+  PixelWidthSourceImpl(final @NonNull ComponentFlattener flattener, final @NonNull Function<CX, CharacterWidthFunction> characterWidthFunction) {
+    this.flattener = flattener;
+    this.characterWidthFunction = characterWidthFunction;
   }
 
   @Override
   public int width(final @NonNull Component component, final @NonNull CX context) {
-    final Map<String, Style> map = this.serialize(component, context);
-    int length = 0;
+    final AtomicInteger length = new AtomicInteger();
 
-    for(final Map.Entry<String, Style> entry : map.entrySet()) {
-      length += this.width(entry.getKey(), entry.getValue(), context);
-    }
+    this.flattener.flatten(component, new FlattenerListener() {
+      final List<Style> styles = new LinkedList<>();
+      Style currentStyle = Style.empty();
 
-    return length;
+      @Override
+      public void pushStyle(final @NonNull Style style) {
+        this.styles.add(style);
+        this.calculateStyle();
+      }
+
+      @Override
+      public void component(final @NonNull String text) {
+        length.addAndGet(PixelWidthSourceImpl.this.width(text, this.currentStyle, context));
+      }
+
+      @Override
+      public void popStyle(final @NonNull Style style) {
+        this.styles.remove(this.styles.size() - 1);
+        this.calculateStyle();
+      }
+
+      private void calculateStyle() {
+        final Style.Builder newStyle = Style.style();
+        for(final Style style : this.styles) {
+          newStyle.merge(style);
+        }
+        this.currentStyle = newStyle.build();
+      }
+    });
+
+    return length.get();
   }
 
   @Override
@@ -197,7 +199,7 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
         codepoint = Character.codePointAt(chars, i);
       } else codepoint = c;
 
-      length += this.width(codepoint, style, context);
+      length += this.characterWidthFunction.apply(context).widthOf(codepoint, style);
     }
 
     return length;
@@ -205,183 +207,48 @@ class PixelWidthSourceImpl<CX> implements PixelWidthSource<CX> {
 
   @Override
   public int width(final char c, final @NonNull Style style, final @NonNull CX context) {
-    return this.function.apply(context).widthOf(c, style);
+    return this.characterWidthFunction.apply(context).widthOf(c, style);
   }
 
   @Override
   public int width(final int codepoint, final @NonNull Style style, final @NonNull CX context) {
-    return this.function.apply(context).widthOf(codepoint, style);
+    return this.characterWidthFunction.apply(context).widthOf(codepoint, style);
   }
 
-  @SuppressWarnings(value = "unchecked")
   @Override
-  public <CO extends Component> void addResolver(final @NonNull Class<CO> resolveFor, final @NonNull ComponentResolver<CO, CX> resolver) {
-    if(resolveFor.isAssignableFrom(TextComponent.class)) {
-      throw new UnsupportedOperationException("Can not add custom resolver for TextComponents");
-    } else if(resolveFor.isAssignableFrom(TranslatableComponent.class)) {
-      this.translatableResolvers.add((ComponentResolver<TranslatableComponent, CX>) resolver);
-      return;
-    } else if(resolveFor.isAssignableFrom(KeybindComponent.class)) {
-      this.keybindResolvers.add((ComponentResolver<KeybindComponent, CX>) resolver);
-      return;
-    } else if(resolveFor.isAssignableFrom(ScoreComponent.class)) {
-      this.scoreResolvers.add((ComponentResolver<ScoreComponent, CX>) resolver);
-      return;
-    } else if(resolveFor.isAssignableFrom(SelectorComponent.class)) {
-      this.selectorResolvers.add((ComponentResolver<SelectorComponent, CX>) resolver);
-      return;
-    } else if(resolveFor.isAssignableFrom(NBTComponent.class)) {
-      if(resolveFor.isAssignableFrom(BlockNBTComponent.class)) {
-        this.blockNBTResolvers.add((ComponentResolver<BlockNBTComponent, CX>) resolver);
-        return;
-      } else if(resolveFor.isAssignableFrom(EntityNBTComponent.class)) {
-        this.entityNBTResolvers.add((ComponentResolver<EntityNBTComponent, CX>) resolver);
-        return;
-      } else if(resolveFor.isAssignableFrom(StorageNBTComponent.class)) {
-        this.storageNBTResolvers.add((ComponentResolver<StorageNBTComponent, CX>) resolver);
-        return;
-      }
-    }
-
-    throw new UnsupportedOperationException("Invalid Component");
+  public @NonNull Builder<CX> toBuilder() {
+    return new BuilderImpl<>(this.flattener, this.characterWidthFunction);
   }
 
-  /**
-   * Serializes using the renderer.
-   *
-   * @param component the component
-   * @since 4.7.0
-   */
-  private Map<String, Style> serialize(final @NonNull Component component, final @NonNull CX context) {
+  static final class BuilderImpl<CX> implements Builder<CX> {
+    private ComponentFlattener flattener;
+    private Function<CX, CharacterWidthFunction> characterWidthFunction;
 
-    final TextComponent rendered = this.renderer.render(component, context);
-
-    return this.flattenComponents(rendered, new HashMap<>());
-  }
-
-  /**
-   * Flattens a {@link TextComponent} and <em>all</em> it's {@link TextComponent} children,
-   * wherever they are, into a map where the content and style of each component is linked together.
-   */
-  private Map<String, Style> flattenComponents(final @NonNull TextComponent parent, final @NonNull Map<String, Style> map) {
-    //By this point, we know that all components in this component tree are TextComponents,
-    //so some casting is acceptable
-    map.put(parent.content(), parent.style());
-    for(final Component child : parent.children()) {
-      map.put(((TextComponent) child).content(), child.style());
-      map.putAll(this.flattenComponents((TextComponent) child, map));
+    BuilderImpl() {
+      this.flattener = ComponentFlattener.basic();
+      this.characterWidthFunction = cx -> DEFAULT_FONT_WIDTH;
     }
 
-    return map;
-  }
-
-  /**
-   * Always returns {@link TextComponent}s.
-   */
-  private class PixelWidthRenderer extends TranslatableComponentRenderer<CX> {
-
-    @Override
-    public @NonNull TextComponent render(final @NonNull Component component, final @NonNull CX context) {
-      return this.mergeStylesDownwards(super.render(component, context));
+    BuilderImpl(final @NonNull ComponentFlattener flattener, final @NonNull Function<CX, CharacterWidthFunction> characterWidthFunction) {
+      this.flattener = flattener;
+      this.characterWidthFunction = characterWidthFunction;
     }
 
     @Override
-    protected @Nullable MessageFormat translate(final @NonNull String key, final @NonNull CX context) {
-      return GlobalTranslator.get().translate(key, PixelWidthSourceImpl.this.localeFunction.apply(context));
+    public @NonNull Builder<CX> flattener(final @NonNull ComponentFlattener flattener) {
+      this.flattener = flattener;
+      return this;
     }
 
     @Override
-    protected @NonNull TextComponent renderBlockNbt(final @NonNull BlockNBTComponent component, final @NonNull CX context) {
-      final BlockNBTComponent component0 = (BlockNBTComponent) super.renderBlockNbt(component, context);
-
-      final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.blockNBTResolvers, component0, context);
-
-      return rendered != null ? rendered : empty().children(component0.children());
+    public @NonNull Builder<CX> characterWidthFunction(final @NonNull Function<CX, CharacterWidthFunction> characterWidthFunction) {
+      this.characterWidthFunction = characterWidthFunction;
+      return this;
     }
 
     @Override
-    protected @NonNull TextComponent renderEntityNbt(final @NonNull EntityNBTComponent component, final @NonNull CX context) {
-      final EntityNBTComponent component0 = (EntityNBTComponent) super.renderEntityNbt(component, context);
-
-      final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.entityNBTResolvers, component0, context);
-
-      return rendered != null ? rendered : empty().children(component0.children());
-    }
-
-    @Override
-    protected @NonNull TextComponent renderStorageNbt(final @NonNull StorageNBTComponent component, final @NonNull CX context) {
-      final StorageNBTComponent component0 = (StorageNBTComponent) super.renderStorageNbt(component, context);
-
-      final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.storageNBTResolvers, component0, context);
-
-      return rendered != null ? rendered : empty().children(component0.children());
-    }
-
-    @Override
-    protected @NonNull TextComponent renderKeybind(final @NonNull KeybindComponent component, final @NonNull CX context) {
-      final KeybindComponent component0 = (KeybindComponent) super.renderKeybind(component, context);
-
-      final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.keybindResolvers, component0, context);
-
-      return rendered != null ? rendered : text(component.keybind(), component0.style()).children(component0.children());
-    }
-
-    @Override
-    protected @NonNull TextComponent renderScore(final @NonNull ScoreComponent component, final @NonNull CX context) {
-      final ScoreComponent component0 = (ScoreComponent) super.renderScore(component, context);
-
-      final String value = component.value(); //If value is present it overrides any other potential score
-      if(value != null) return text(value, component0.style()).children(component0.children());
-
-      final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.scoreResolvers, component, context);
-
-      return rendered != null ? rendered : empty().children(component0.children());
-    }
-
-    @Override
-    protected @NonNull TextComponent renderSelector(final @NonNull SelectorComponent component, final @NonNull CX context) {
-      final SelectorComponent component0 = (SelectorComponent) super.renderSelector(component, context);
-
-      final TextComponent rendered = this.renderUsingResolver(PixelWidthSourceImpl.this.selectorResolvers, component, context);
-
-      return rendered != null ? rendered : empty().children(component0.children());
-    }
-
-    @Override
-    protected @NonNull TextComponent renderText(final @NonNull TextComponent component, final @NonNull CX context) {
-      return (TextComponent) super.renderText(component, context); //easy money
-    }
-
-    @Override
-    protected @NonNull TextComponent renderTranslatable(final @NonNull TranslatableComponent component, final @NonNull CX context) {
-      Component component0 = super.renderTranslatable(component, context);
-
-      if(!(component0 instanceof TextComponent)) component0 = this.renderUsingResolver(PixelWidthSourceImpl.this.translatableResolvers, component, context);
-
-      return component0 != null ? (TextComponent) component0 : text(component.key(), component.style()).children(component.children());
-    }
-
-    //null -> unsuccessful
-    private <CO extends Component> @Nullable TextComponent renderUsingResolver(final @NonNull Set<ComponentResolver<CO, CX>> resolvers, final @NonNull CO component, final @NonNull CX context) {
-      TextComponent result = null;
-      for(final ComponentResolver<CO, CX> resolver : resolvers) {
-        final @Nullable TextComponent rendered = resolver.resolve(component, context);
-        if(rendered != null) result = rendered;
-      }
-
-      return result;
-    }
-
-    private @NonNull TextComponent mergeStylesDownwards(final @NonNull Component parent) {
-      final TextComponent.Builder builder = text();
-
-      builder.append(parent);
-      for(final Component child : parent.children()) {
-        final Style merged = child.style().merge(parent.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET, Style.Merge.all());
-        builder.append(this.mergeStylesDownwards(child.style(merged)));
-      }
-
-      return builder.build();
+    public @NonNull PixelWidthSource<CX> build() {
+      return new PixelWidthSourceImpl<>(this.flattener, this.characterWidthFunction);
     }
   }
 }

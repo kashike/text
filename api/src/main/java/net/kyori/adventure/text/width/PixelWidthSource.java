@@ -25,13 +25,12 @@ package net.kyori.adventure.text.width;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.util.Locale;
 import java.util.function.Function;
 
 /**
@@ -39,34 +38,30 @@ import java.util.function.Function;
  * in the standard minecraft font.
  *
  * @param <CX> a context (player, server, locale)
- * @see #addResolver(Class, ComponentResolver)
  * @since 4.7.0
  */
 @ApiStatus.NonExtendable
-public interface PixelWidthSource<CX> {
+public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, PixelWidthSource.Builder<CX>> {
 
   /**
    * A pixel width source calculating width using the default minecraft font.
    *
-   * @param <CX> the context for this pixel width source(e.g player, world, locale)
-   * @param localeFunction used for automatic server-side translations using the {@link GlobalTranslator}
-   * @return a pixel width source using a {@link PixelWidthSourceImpl#DEFAULT_FONT_WIDTH character function} for the default minecraft font
+   * @return a pixel width source using the default values for calculation
    * @since 4.7.0
    */
-  static <CX> @NonNull PixelWidthSource<CX> defaultPixelWidth(final @NonNull Function<CX, Locale> localeFunction) {
-    return new PixelWidthSourceImpl<>(cx -> PixelWidthSourceImpl.DEFAULT_FONT_WIDTH, localeFunction);
+  static @NonNull PixelWidthSource<?> basic() {
+    return PixelWidthSourceImpl.BASIC;
   }
 
   /**
-   * A pixel width source calculating width using the default minecraft font.
+   * A pixel width source builder.
    *
-   * @param <CX> the context for this pixel width source(e.g player, world, locale)
-   * @param localeFunction used for automatic server-side translations using the {@link GlobalTranslator}
-   * @return a pixel width source using a custom character function
+   * @param context a context type (player, server, locale)
+   * @return a pixel width source builder
    * @since 4.7.0
    */
-  static <CX> @NonNull PixelWidthSource<CX> withCustomCharacterFunction(final @NonNull Function<CX, CharacterWidthFunction> function, final @NonNull Function<CX, Locale> localeFunction) {
-    return new PixelWidthSourceImpl<>(function, localeFunction);
+  static <CX> @NonNull Builder<CX> builder(Class<CX> context) {
+    return new PixelWidthSourceImpl.BuilderImpl<>();
   }
 
   /**
@@ -113,36 +108,34 @@ public interface PixelWidthSource<CX> {
   int width(final int codepoint, final @NonNull Style style, final @NonNull CX context);
 
   /**
-   * Add a {@link ComponentResolver} to this source that can resolve a specific type of component given a context.
-   * Whenever a component is resolved successfully the result is used regardless of if other resolvers are able to resolve as well.
+   * A builder for a pixel width source.
    *
-   * @param resolveFor the component type this resolver accepts
-   * @param resolver the resolver
-   * @see ComponentResolver
+   * <p>A new builder will start a default value for each part, see the methods for each part for these values</p>
+   *
+   * @param <CX> a context
    * @since 4.7.0
    */
-  <CO extends Component> void addResolver(final @NonNull Class<CO> resolveFor, final @NonNull ComponentResolver<CO, CX> resolver);
-
-  /**
-   * Something that can either resolve a {@link Component} into a {@link TextComponent}, or return {@code null} if not possible.
-   *
-   * @param <CX> a context (player, server, locale)
-   * @since 4.7.0
-   */
-  interface ComponentResolver<CO extends Component, CX> {
+  interface Builder<CX> extends Buildable.Builder<PixelWidthSource<CX>> {
+    /**
+     * Set the {@link ComponentFlattener} used by this pixel width source to turn components into plain text.
+     *
+     * <p>The default value for this is {@link ComponentFlattener#basic()}</p>
+     *
+     * @param flattener the flattener
+     * @return this builder
+     * @since 4.8.0
+     */
+    @NonNull Builder<CX> flattener(final @NonNull ComponentFlattener flattener);
 
     /**
-     * Tries to display a component as plain text.
+     * Set the function used to figure out which {@link CharacterWidthFunction} to use based on the context provided at calculation time.
      *
-     * <p>Returning a {@link TextComponent} signals that the component resolved successfully.</p>
+     * <p>The default value for this is {@link PixelWidthSourceImpl#DEFAULT_FONT_WIDTH}</p>
      *
-     * <p>Returning {@code null} signals that the component was not able to be resolved</p>
-     *
-     * @param component the component to resolve
-     * @param context a context
-     * @return The attempted resolve of the component
-     * @since 4.7.0
+     * @param characterWidthFunction the function
+     * @return this builder
+     * @since 4.8.0
      */
-    @Nullable TextComponent resolve(final @NonNull CO component, final @NonNull CX context);
+    @NonNull Builder<CX> characterWidthFunction(final @NonNull Function<CX, CharacterWidthFunction> characterWidthFunction);
   }
 }

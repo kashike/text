@@ -26,8 +26,9 @@ package net.kyori.adventure.text.width;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.KeybindComponent;
-import net.kyori.adventure.text.ScoreComponent;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -36,25 +37,27 @@ import net.kyori.adventure.translation.TranslationRegistry;
 import org.junit.jupiter.api.Test;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.google.common.truth.Truth.assertThat;
 import static net.kyori.adventure.text.Component.keybind;
-import static net.kyori.adventure.text.Component.score;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.format.Style.empty;
 import static net.kyori.adventure.text.format.Style.style;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PixelWidthSourceTest {
 
   private static final TranslationRegistry DUMMY_REGISTRY = TranslationRegistry.create(Key.key("adventure-test", "width"));
-
-  private final PixelWidthSource<DummyContext> defaultPixelWidth = PixelWidthSource.defaultPixelWidth(DummyContext::locale);
+  //This has a hardcoded language for translation as a preparation for when context can be applied in the ComponentFlattener
+  private final PixelWidthSource<DummyContext> defaultPixelWidth =
+    PixelWidthSource.builder(DummyContext.class)
+      .flattener(ComponentFlattener.builder()
+        .complexMapper(TranslatableComponent.class, (t, cc) -> cc.accept(GlobalTranslator.render(t.children(new ArrayList<>()), Locale.US)))
+        .mapper(TextComponent.class, TextComponent::content).build()).build();
   private final DummyContext context = new DummyContext(Locale.US);
 
   private final Style bold = style(TextDecoration.BOLD);
@@ -108,41 +111,19 @@ public class PixelWidthSourceTest {
 
   @Test
   public void testWidthCustomResolver() {
-    this.defaultPixelWidth.addResolver(KeybindComponent.class, (co, d) -> {
-      final String keybind = this.context.keybinds().get(co.keybind());
-      if(keybind != null) return text(keybind);
-      return null;
-    });
-    assertEquals(40, this.defaultPixelWidth.width(keybind("key.jump"), this.context));
-  }
-
-  @Test
-  public void testWidthMultipleCustomResolvers() {
-    this.defaultPixelWidth.addResolver(ScoreComponent.class, (co, d) -> {
-      final String value = co.value();
-      return value != null ? text(value) : null;
-    });
-
-    this.defaultPixelWidth.addResolver(ScoreComponent.class, (co, d) -> text(co.name()));
-
-    assertEquals(12, this.defaultPixelWidth.width(score("zml", "dummy"), this.context));
-    assertThat(this.defaultPixelWidth.width(score("luck", "dummy", "secrets"), this.context)).isAnyOf(33, 16);
-  }
-
-  @Test
-  public void testAddTextResolver() {
-    assertThrows(UnsupportedOperationException.class, () -> this.defaultPixelWidth.addResolver(TextComponent.class, (co, d) -> text("insert")));
+    final PixelWidthSource<DummyContext> custom = PixelWidthSource.builder(DummyContext.class).flattener(ComponentFlattener.builder().mapper(KeybindComponent.class, k -> this.context.keybinds().get(k.keybind())).build()).build();
+    assertEquals(40, custom.width(keybind("key.jump"), this.context));
   }
 
   @Test
   public void testWidthUsingCustomCharacterFunction() {
-    final PixelWidthSource<DummyContext> custom = PixelWidthSource.withCustomCharacterFunction(d -> new CustomFontCharacterWidthFunction(), DummyContext::locale);
+    final PixelWidthSource<DummyContext> custom = PixelWidthSource.builder(DummyContext.class).characterWidthFunction(cx -> new CustomFontCharacterWidthFunction()).build();
     assertEquals(17, custom.width(text("aA1 ").append(text("2", NamedTextColor.RED, TextDecoration.OBFUSCATED)), this.context));
   }
 
   @Test
   public void testWidthNonBMPCharacter() {
-    final PixelWidthSource<DummyContext> custom = PixelWidthSource.withCustomCharacterFunction(d -> new CustomFontCharacterWidthFunction(), DummyContext::locale);
+    final PixelWidthSource<DummyContext> custom = PixelWidthSource.builder(DummyContext.class).characterWidthFunction(cx -> new CustomFontCharacterWidthFunction()).build();
     assertEquals(8, custom.width(text("\uD800\uDD92"), this.context)); // 𐆒
   }
 
