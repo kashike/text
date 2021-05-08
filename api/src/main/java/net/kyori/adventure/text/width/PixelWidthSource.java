@@ -30,6 +30,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -37,14 +38,14 @@ import java.util.function.Function;
  * A source able to return the width of text. By default accuracy can only be guaranteed for {@link TextComponent}s
  * in the standard minecraft font.
  *
- * @param <CX> a context (player, server, locale)
+ * @param <CX> a context type (player, server, locale)
  * @since 4.7.0
  */
 @ApiStatus.NonExtendable
 public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, PixelWidthSource.Builder<CX>> {
 
   /**
-   * A pixel width source calculating width using the default minecraft font.
+   * A pixel width source calculating width using the default minecraft font and {@link ComponentFlattener#basic()}.
    *
    * @return a pixel width source using the default values for calculation
    * @since 4.7.0
@@ -54,14 +55,18 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
   }
 
   /**
-   * A pixel width source builder.
+   * A pixel width source calculating width using the provided flattener and character width function.
    *
-   * @param context a context type (player, server, locale)
-   * @return a pixel width source builder
+   * <p>A null value results in using the basic counterpart</p>
+   *
+   * @param flattener a flattener used to turn components into linear text
+   * @param function a function that provides a character width function
+   * @param <CX> context a context type (player, server, locale)
+   * @return a pixel width source
    * @since 4.7.0
    */
-  static <CX> @NonNull Builder<CX> builder(Class<CX> context) {
-    return new PixelWidthSourceImpl.BuilderImpl<>();
+  static <CX> @NonNull PixelWidthSource<CX> pixelWidthSource(final @Nullable ComponentFlattener flattener, final @Nullable Function<CX, CharacterWidthFunction> function) {
+    return new PixelWidthSourceImpl<>(flattener == null ? ComponentFlattener.basic() : flattener, function == null ? cx -> PixelWidthSourceImpl.DEFAULT_FONT_WIDTH : function);
   }
 
   /**
@@ -112,7 +117,7 @@ public interface PixelWidthSource<CX> extends Buildable<PixelWidthSource<CX>, Pi
    *
    * <p>A new builder will start a default value for each part, see the methods for each part for these values</p>
    *
-   * @param <CX> a context
+   * @param <CX> a context type (player, server, locale)
    * @since 4.7.0
    */
   interface Builder<CX> extends Buildable.Builder<PixelWidthSource<CX>> {

@@ -41,12 +41,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 
 import static net.kyori.adventure.text.Component.keybind;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.translatable;
 import static net.kyori.adventure.text.format.Style.empty;
 import static net.kyori.adventure.text.format.Style.style;
+import static net.kyori.adventure.text.width.PixelWidthSource.pixelWidthSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PixelWidthSourceTest {
@@ -54,10 +56,10 @@ public class PixelWidthSourceTest {
   private static final TranslationRegistry DUMMY_REGISTRY = TranslationRegistry.create(Key.key("adventure-test", "width"));
   //This has a hardcoded language for translation as a preparation for when context can be applied in the ComponentFlattener
   private final PixelWidthSource<DummyContext> defaultPixelWidth =
-    PixelWidthSource.builder(DummyContext.class)
-      .flattener(ComponentFlattener.builder()
+    pixelWidthSource(
+      ComponentFlattener.builder()
         .complexMapper(TranslatableComponent.class, (t, cc) -> cc.accept(GlobalTranslator.render(t.children(new ArrayList<>()), Locale.US)))
-        .mapper(TextComponent.class, TextComponent::content).build()).build();
+        .mapper(TextComponent.class, TextComponent::content).build(), null);
   private final DummyContext context = new DummyContext(Locale.US);
 
   private final Style bold = style(TextDecoration.BOLD);
@@ -111,19 +113,22 @@ public class PixelWidthSourceTest {
 
   @Test
   public void testWidthCustomResolver() {
-    final PixelWidthSource<DummyContext> custom = PixelWidthSource.builder(DummyContext.class).flattener(ComponentFlattener.builder().mapper(KeybindComponent.class, k -> this.context.keybinds().get(k.keybind())).build()).build();
+    final ComponentFlattener keybindFlattener = ComponentFlattener.builder().mapper(KeybindComponent.class, k -> this.context.keybinds().get(k.keybind())).build();
+    final PixelWidthSource<DummyContext> custom = pixelWidthSource(keybindFlattener, null);
     assertEquals(40, custom.width(keybind("key.jump"), this.context));
   }
 
   @Test
   public void testWidthUsingCustomCharacterFunction() {
-    final PixelWidthSource<DummyContext> custom = PixelWidthSource.builder(DummyContext.class).characterWidthFunction(cx -> new CustomFontCharacterWidthFunction()).build();
+    final Function<DummyContext, CharacterWidthFunction> customFunction = cx -> new CustomFontCharacterWidthFunction();
+    final PixelWidthSource<DummyContext> custom = pixelWidthSource(null, customFunction);
     assertEquals(17, custom.width(text("aA1 ").append(text("2", NamedTextColor.RED, TextDecoration.OBFUSCATED)), this.context));
   }
 
   @Test
   public void testWidthNonBMPCharacter() {
-    final PixelWidthSource<DummyContext> custom = PixelWidthSource.builder(DummyContext.class).characterWidthFunction(cx -> new CustomFontCharacterWidthFunction()).build();
+    final Function<DummyContext, CharacterWidthFunction> customFunction = cx -> new CustomFontCharacterWidthFunction();
+    final PixelWidthSource<DummyContext> custom = pixelWidthSource(null, customFunction);
     assertEquals(8, custom.width(text("\uD800\uDD92"), this.context)); // 𐆒
   }
 
