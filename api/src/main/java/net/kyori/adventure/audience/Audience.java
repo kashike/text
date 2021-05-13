@@ -24,6 +24,8 @@
 package net.kyori.adventure.audience;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
@@ -132,6 +134,34 @@ public interface Audience extends Pointered {
    */
   static @NonNull Collector<? super Audience, ?, ForwardingAudience> toAudience() {
     return Audiences.COLLECTOR;
+  }
+
+  /**
+   * Filters this audience.
+   *
+   * <p>The returned {@code Audience} may be the same, or a completely different one.</p>
+   *
+   * @param filter the filter
+   * @since 4.8.0
+   */
+  default @NonNull Audience filterAudience(final @NonNull Predicate<? super Audience> filter) {
+    if(filter.test(this)) {
+      return this;
+    }
+    return empty();
+  }
+
+  /**
+   * Executes an action against all audiences.
+   *
+   * <p>If you implement {@code Audience} and not {@link ForwardingAudience} in your own code, and your audience forwards to
+   * other audiences, then you <b>must</b> override this method and provide each audience to {@code action}.</p>
+   *
+   * @param action the action
+   * @since 4.8.0
+   */
+  default void forEachAudience(final @NonNull Consumer<? super Audience> action) {
+    action.accept(this);
   }
 
   /**

@@ -23,8 +23,12 @@
  */
 package net.kyori.adventure.audience;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
@@ -36,6 +40,7 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -72,6 +77,30 @@ public interface ForwardingAudience extends Audience {
   @Override
   default <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
     return defaultValue.get(); // unsupported
+  }
+
+  @Override
+  default @NonNull Audience filterAudience(final @NonNull Predicate<? super Audience> filter) {
+    @Nullable List<Audience> audiences = null;
+    for(final Audience audience : this.audiences()) {
+      if(filter.test(audience)) {
+        final Audience filtered = audience.filterAudience(filter);
+        if(filtered != Audience.empty()) {
+          if(audiences == null) {
+            audiences = new ArrayList<>();
+          }
+          audiences.add(filtered);
+        }
+      }
+    }
+    return audiences != null
+      ? Audience.audience(audiences)
+      : Audience.empty();
+  }
+
+  @Override
+  default void forEachAudience(final @NonNull Consumer<? super Audience> action) {
+    for(final Audience audience : this.audiences()) audience.forEachAudience(action);
   }
 
   @Override
@@ -189,6 +218,19 @@ public interface ForwardingAudience extends Audience {
     @Override
     default <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
       return this.audience().getOrDefaultFrom(pointer, defaultValue);
+    }
+
+    @Override
+    default @NonNull Audience filterAudience(final @NonNull Predicate<? super Audience> filter) {
+      final Audience audience = this.audience();
+      return filter.test(audience)
+        ? this
+        : Audience.empty();
+    }
+
+    @Override
+    default void forEachAudience(final @NonNull Consumer<? super Audience> action) {
+      this.audience().forEachAudience(action);
     }
 
     @Override

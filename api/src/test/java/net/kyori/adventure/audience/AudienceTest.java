@@ -26,6 +26,7 @@ package net.kyori.adventure.audience;
 import com.google.common.testing.EqualsTester;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import net.kyori.adventure.identity.Identity;
 import org.junit.jupiter.api.Test;
@@ -73,6 +74,33 @@ class AudienceTest {
   void testGetOrDefaultFrom() {
     final UUID uuid = UUID.randomUUID();
     assertEquals(uuid, Audience.empty().getOrDefaultFrom(Identity.UUID, () -> uuid));
+  }
+
+  @Test
+  void testForEachAudienceEmpty() {
+    final AtomicInteger touched = new AtomicInteger(0);
+    Audience.empty().forEachAudience(audience -> touched.incrementAndGet());
+    assertEquals(0, touched.get());
+  }
+
+  @Test
+  void testForEachAudienceForwarded() {
+    final AtomicInteger touched = new AtomicInteger(0);
+    Audience.audience(
+      new Audience() {
+      }
+    ).forEachAudience(audience -> touched.incrementAndGet());
+    assertEquals(1, touched.get());
+  }
+
+  @Test
+  void testForEachAudienceForwardedOfEmpty() {
+    final AtomicInteger touched = new AtomicInteger(0);
+    Audience.audience(
+      Audience.empty(),
+      Audience.empty()
+    ).forEachAudience(audience -> touched.incrementAndGet());
+    assertEquals(0, touched.get());
   }
 
   @Test
