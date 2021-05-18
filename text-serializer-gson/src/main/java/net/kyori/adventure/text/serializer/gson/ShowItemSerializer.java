@@ -23,71 +23,90 @@
  */
 package net.kyori.adventure.text.serializer.gson;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import java.io.IOException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-final class ShowItemSerializer implements JsonDeserializer<HoverEvent.ShowItem>, JsonSerializer<HoverEvent.ShowItem> {
+final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
+
+  public static final TypeAdapter<HoverEvent.ShowItem> INSTANCE = new ShowItemSerializer().nullSafe();
+
   static final String ID = "id";
   static final String COUNT = "count";
   static final String TAG = "tag";
 
-  ShowItemSerializer() {
+  private ShowItemSerializer() {
   }
 
   @Override
-  public HoverEvent.ShowItem deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-    final JsonObject object = json.getAsJsonObject();
+  public HoverEvent.ShowItem read(final JsonReader in) throws IOException {
+    in.beginObject();
 
-    if(!object.has(ID)) {
-      throw new JsonParseException("Not sure how to deserialize show_item hover event");
-    }
-
-    final Key id = context.deserialize(object.getAsJsonPrimitive(ID), Key.class);
-
+    Key key = null;
     int count = 1;
-    if(object.has(COUNT)) {
-      count = object.get(COUNT).getAsInt();
-    }
-
     BinaryTagHolder nbt = null;
-    if(object.has(TAG)) {
-      final JsonElement tag = object.get(TAG);
-      if(tag.isJsonPrimitive()) {
-        nbt = BinaryTagHolder.of(tag.getAsString());
-      } else if(!tag.isJsonNull()) {
-        throw new JsonParseException("Expected " + TAG + " to be a string");
+
+    while(in.hasNext()) {
+      switch(in.nextName()) {
+        case ID:
+          key = KeySerializer.INSTANCE.read(in);
+          break;
+        case COUNT:
+          count = in.nextInt();
+          break;
+        case TAG:
+          switch(in.peek()) {
+            case STRING:
+            case NUMBER:
+              nbt = BinaryTagHolder.of(in.nextString());
+              break;
+            case BOOLEAN:
+              nbt = BinaryTagHolder.of(String.valueOf(in.nextBoolean()));
+              break;
+            case NULL:
+              in.nextNull();
+              break;
+            default:
+              throw new JsonParseException("Expected " + TAG + " to be a string");
+          }
+          break;
+        default:
+          in.skipValue();
+          break;
       }
     }
 
-    return HoverEvent.ShowItem.of(id, count, nbt);
+    if(key == null) {
+      throw new JsonParseException("Not sure how to deserialize show_item hover event");
+    }
+    in.endObject();
+
+    return HoverEvent.ShowItem.of(key, count, nbt);
   }
 
   @Override
-  public JsonElement serialize(final HoverEvent.ShowItem src, final Type typeOfSrc, final JsonSerializationContext context) {
-    final JsonObject json = new JsonObject();
+  public void write(final JsonWriter out, final HoverEvent.ShowItem value) throws IOException {
+    out.beginObject();
 
-    json.add(ID, context.serialize(src.item()));
+    out.name(ID);
+    KeySerializer.INSTANCE.write(out, value.item());
 
-    final int count = src.count();
+    final int count = value.count();
     if(count != 1) {
-      json.addProperty(COUNT, count);
+      out.name(COUNT).value(count);
     }
 
-    final @Nullable BinaryTagHolder nbt = src.nbt();
+    final @Nullable BinaryTagHolder nbt = value.nbt();
     if(nbt != null) {
-      json.addProperty(TAG, nbt.string());
+      out.name(TAG).value(nbt.string());
     }
 
-    return json;
+    out.endObject();
   }
 }

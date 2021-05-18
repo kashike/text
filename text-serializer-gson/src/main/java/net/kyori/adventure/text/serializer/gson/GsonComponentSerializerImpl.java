@@ -58,7 +58,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
       builder.registerTypeHierarchyAdapter(Style.class, new StyleSerializer(legacyHoverSerializer, emitLegacyHover));
       builder.registerTypeAdapter(ClickEvent.Action.class, IndexedSerializer.of("click action", ClickEvent.Action.NAMES));
       builder.registerTypeAdapter(HoverEvent.Action.class, IndexedSerializer.of("hover action", HoverEvent.Action.NAMES));
-      builder.registerTypeAdapter(HoverEvent.ShowItem.class, new ShowItemSerializer());
+      builder.registerTypeAdapter(HoverEvent.ShowItem.class, ShowItemSerializer.INSTANCE);
       builder.registerTypeAdapter(HoverEvent.ShowEntity.class, new ShowEntitySerializer());
       builder.registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer());
       builder.registerTypeHierarchyAdapter(TextColor.class, downsampleColor ? TextColorSerializer.DOWNSAMPLE_COLOR : TextColorSerializer.INSTANCE);
