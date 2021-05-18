@@ -26,6 +26,7 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import net.kyori.adventure.key.Key;
@@ -34,7 +35,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
-
   public static final TypeAdapter<HoverEvent.ShowItem> INSTANCE = new ShowItemSerializer().nullSafe();
 
   static final String ID = "id";
@@ -53,32 +53,24 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
     BinaryTagHolder nbt = null;
 
     while(in.hasNext()) {
-      switch(in.nextName()) {
-        case ID:
-          key = KeySerializer.INSTANCE.read(in);
-          break;
-        case COUNT:
-          count = in.nextInt();
-          break;
-        case TAG:
-          switch(in.peek()) {
-            case STRING:
-            case NUMBER:
-              nbt = BinaryTagHolder.of(in.nextString());
-              break;
-            case BOOLEAN:
-              nbt = BinaryTagHolder.of(String.valueOf(in.nextBoolean()));
-              break;
-            case NULL:
-              in.nextNull();
-              break;
-            default:
-              throw new JsonParseException("Expected " + TAG + " to be a string");
-          }
-          break;
-        default:
-          in.skipValue();
-          break;
+      final String name = in.nextName();
+      if(name.equals(ID)) {
+        key = KeySerializer.INSTANCE.read(in);
+      } else if(name.equals(COUNT)) {
+        count = in.nextInt();
+      } else if(name.equals(TAG)) {
+        final JsonToken peek = in.peek();
+        if(peek == JsonToken.STRING || peek == JsonToken.NUMBER) {
+          nbt = BinaryTagHolder.of(in.nextString());
+        } else if(peek == JsonToken.BOOLEAN) {
+          nbt = BinaryTagHolder.of(String.valueOf(in.nextBoolean()));
+        } else if(peek == JsonToken.NULL) {
+          in.nextNull();
+        } else {
+          throw new JsonParseException("Expected " + TAG + " to be a string");
+        }
+      } else {
+        in.skipValue();
       }
     }
 
