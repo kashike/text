@@ -91,12 +91,14 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
 
     final int count = value.count();
     if(count != 1) {
-      out.name(COUNT).value(count);
+      out.name(COUNT);
+      out.value(count);
     }
 
     final @Nullable BinaryTagHolder nbt = value.nbt();
     if(nbt != null) {
-      out.name(TAG).value(nbt.string());
+      out.name(TAG);
+      out.value(nbt.string());
     }
 
     out.endObject();
