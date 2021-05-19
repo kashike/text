@@ -50,21 +50,21 @@ final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
 
     Key key = null;
     int count = 1;
-    BinaryTagHolder nbt = null;
+    @Nullable BinaryTagHolder nbt = null;
 
     while(in.hasNext()) {
-      final String name = in.nextName();
-      if(name.equals(ID)) {
+      final String fieldName = in.nextName();
+      if(fieldName.equals(ID)) {
         key = KeySerializer.INSTANCE.read(in);
-      } else if(name.equals(COUNT)) {
+      } else if(fieldName.equals(COUNT)) {
         count = in.nextInt();
-      } else if(name.equals(TAG)) {
-        final JsonToken peek = in.peek();
-        if(peek == JsonToken.STRING || peek == JsonToken.NUMBER) {
+      } else if(fieldName.equals(TAG)) {
+        final JsonToken token = in.peek();
+        if(token == JsonToken.STRING || token == JsonToken.NUMBER) {
           nbt = BinaryTagHolder.of(in.nextString());
-        } else if(peek == JsonToken.BOOLEAN) {
+        } else if(token == JsonToken.BOOLEAN) {
           nbt = BinaryTagHolder.of(String.valueOf(in.nextBoolean()));
-        } else if(peek == JsonToken.NULL) {
+        } else if(token == JsonToken.NULL) {
           in.nextNull();
         } else {
           throw new JsonParseException("Expected " + TAG + " to be a string");

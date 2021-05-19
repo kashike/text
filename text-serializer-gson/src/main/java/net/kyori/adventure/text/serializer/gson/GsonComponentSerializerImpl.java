@@ -53,17 +53,10 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     this.legacyHoverSerializer = legacyHoverSerializer;
     this.emitLegacyHover = emitLegacyHover;
     this.populator = builder -> {
-      builder.registerTypeHierarchyAdapter(Key.class, KeySerializer.INSTANCE);
+      builder.registerTypeAdapterFactory(new SerializerFactory(downsampleColor, legacyHoverSerializer, emitLegacyHover));
       builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
       builder.registerTypeHierarchyAdapter(Style.class, new StyleSerializer(legacyHoverSerializer, emitLegacyHover));
-      builder.registerTypeAdapter(ClickEvent.Action.class, IndexedSerializer.of("click action", ClickEvent.Action.NAMES));
-      builder.registerTypeAdapter(HoverEvent.Action.class, IndexedSerializer.of("hover action", HoverEvent.Action.NAMES));
-      builder.registerTypeAdapter(HoverEvent.ShowItem.class, ShowItemSerializer.INSTANCE);
       builder.registerTypeAdapter(HoverEvent.ShowEntity.class, new ShowEntitySerializer());
-      builder.registerTypeAdapter(TextColorWrapper.class, new TextColorWrapper.Serializer());
-      builder.registerTypeHierarchyAdapter(TextColor.class, downsampleColor ? TextColorSerializer.DOWNSAMPLE_COLOR : TextColorSerializer.INSTANCE);
-      builder.registerTypeAdapter(TextDecoration.class, IndexedSerializer.of("text decoration", TextDecoration.NAMES));
-      builder.registerTypeHierarchyAdapter(BlockNBTComponent.Pos.class, BlockNBTComponentPosSerializer.INSTANCE);
       return builder;
     };
     this.serializer = this.populator.apply(new GsonBuilder()).create();
