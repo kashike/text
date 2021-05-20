@@ -74,6 +74,8 @@ final class SerializerFactory implements TypeAdapterFactory {
       return (TypeAdapter<T>) IndexedSerializer.of("hover action", HoverEvent.Action.NAMES);
     } else if(SHOW_ITEM_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) ShowItemSerializer.INSTANCE;
+    } else if(SHOW_ENTITY_TYPE.isAssignableFrom(rawType)) {
+      return (TypeAdapter<T>) new ShowEntitySerializer(gson::getAdapter);
     } else if(COLOR_WRAPPER_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) TextColorWrapper.Serializer.INSTANCE;
     } else if(COLOR_TYPE.isAssignableFrom(rawType)) {
