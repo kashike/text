@@ -28,9 +28,16 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.util.Index;
 
 final class IndexedSerializer<E> extends TypeAdapter<E> {
+  public static final TypeAdapter<ClickEvent.Action> CLICK_ACTION_SERIALIZER = of("click action", ClickEvent.Action.NAMES);
+  public static final TypeAdapter<HoverEvent.Action<?>> HOVER_ACTION_SERIALIZER = of("hover action", HoverEvent.Action.NAMES);
+  public static final TypeAdapter<TextDecoration> TEXT_DECORATION_SERIALIZER = of("text decoration", TextDecoration.NAMES);
+
   private final String name;
   private final Index<String, E> map;
 
