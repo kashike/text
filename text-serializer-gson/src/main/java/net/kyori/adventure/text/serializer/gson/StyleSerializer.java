@@ -103,9 +103,9 @@ final class StyleSerializer extends TypeAdapter<Style> {
     while(in.hasNext()) {
       final String fieldName = in.nextName();
       if(fieldName.equals(FONT)) {
-        style.font(this.getAdapter(Key.class).read(in));
+        style.font(this.getAdapter(SerializerFactory.KEY_TYPE).read(in));
       } else if(fieldName.equals(COLOR)) {
-        final TextColorWrapper color = this.getAdapter(TextColorWrapper.class).read(in);
+        final TextColorWrapper color = this.getAdapter(SerializerFactory.COLOR_WRAPPER_TYPE).read(in);
         if(color.color != null) {
           style.color(color.color);
         } else if(color.decoration != null) {
@@ -262,7 +262,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     final @Nullable Key font = value.font();
     if(font != null) {
       out.name(FONT);
-      this.getAdapter(Key.class).write(out, font);
+      this.getAdapter(SerializerFactory.KEY_TYPE).write(out, font);
     }
 
     out.endObject();

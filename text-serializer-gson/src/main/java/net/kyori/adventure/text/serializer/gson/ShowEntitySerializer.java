@@ -62,7 +62,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     while(in.hasNext()) {
       final String fieldName = in.nextName();
       if(fieldName.equals(TYPE)) {
-        type = this.getAdapter(Key.class).read(in);
+        type = this.getAdapter(SerializerFactory.KEY_TYPE).read(in);
       } else if(fieldName.equals(ID)) {
         id = UUID.fromString(in.nextString());
       } else if(fieldName.equals(NAME)) {
@@ -85,7 +85,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     out.beginObject();
 
     out.name(TYPE);
-    this.getAdapter(Key.class).write(out, value.type());
+    this.getAdapter(SerializerFactory.KEY_TYPE).write(out, value.type());
 
     out.name(ID);
     out.value(value.id().toString());
