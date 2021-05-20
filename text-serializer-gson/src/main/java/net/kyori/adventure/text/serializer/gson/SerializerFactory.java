@@ -66,6 +66,8 @@ final class SerializerFactory implements TypeAdapterFactory {
     final Class<? super T> rawType = type.getRawType();
     if(KEY_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) KeySerializer.INSTANCE;
+    } else if(STYLE_TYPE.isAssignableFrom(rawType)) {
+      return (TypeAdapter<T>) new StyleSerializer(this.legacyHoverSerializer, this.emitLegacyHover, gson::getAdapter);
     } else if(CLICK_ACTION_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) IndexedSerializer.of("click action", ClickEvent.Action.NAMES);
     } else if(HOVER_ACTION_TYPE.isAssignableFrom(rawType)) {
