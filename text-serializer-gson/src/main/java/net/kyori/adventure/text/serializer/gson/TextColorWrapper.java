@@ -48,7 +48,7 @@ final class TextColorWrapper {
   }
 
   static class Serializer extends TypeAdapter<TextColorWrapper> {
-    public static final Serializer INSTANCE = new Serializer();
+    static final Serializer INSTANCE = new Serializer();
 
     private Serializer() {
     }

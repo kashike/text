@@ -35,7 +35,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class ShowItemSerializer extends TypeAdapter<HoverEvent.ShowItem> {
-  public static final TypeAdapter<HoverEvent.ShowItem> INSTANCE = new ShowItemSerializer().nullSafe();
+  static final TypeAdapter<HoverEvent.ShowItem> INSTANCE = new ShowItemSerializer().nullSafe();
 
   static final String ID = "id";
   static final String COUNT = "count";
