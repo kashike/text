@@ -40,15 +40,11 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
   static final String ID = "id";
   static final String NAME = "name";
 
-  private final Function<Class<?>, TypeAdapter<?>> adapterGetter;
-
-  ShowEntitySerializer(final Function<Class<?>, TypeAdapter<?>> adapterGetter) {
-    this.adapterGetter = adapterGetter;
-  }
+  private final TypeAdapter<Component> componentSerializer;
 
   @SuppressWarnings("unchecked")
-  private <T> TypeAdapter<T> getAdapter(final Class<T> type) {
-    return (TypeAdapter<T>) this.adapterGetter.apply(type);
+  ShowEntitySerializer(final Function<Class<?>, TypeAdapter<?>> adapterGetter) {
+    this.componentSerializer = (TypeAdapter<Component>) adapterGetter.apply(SerializerFactory.COMPONENT_TYPE);
   }
 
   @Override
@@ -62,11 +58,11 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     while(in.hasNext()) {
       final String fieldName = in.nextName();
       if(fieldName.equals(TYPE)) {
-        type = this.getAdapter(SerializerFactory.KEY_TYPE).read(in);
+        type = KeySerializer.INSTANCE.read(in);
       } else if(fieldName.equals(ID)) {
         id = UUID.fromString(in.nextString());
       } else if(fieldName.equals(NAME)) {
-        name = this.getAdapter(SerializerFactory.COMPONENT_TYPE).read(in);
+        name = this.componentSerializer.read(in);
       } else {
         in.skipValue();
       }
@@ -85,7 +81,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     out.beginObject();
 
     out.name(TYPE);
-    this.getAdapter(SerializerFactory.KEY_TYPE).write(out, value.type());
+    KeySerializer.INSTANCE.write(out, value.type());
 
     out.name(ID);
     out.value(value.id().toString());
@@ -93,7 +89,7 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
     final @Nullable Component name = value.name();
     if(name != null) {
       out.name(NAME);
-      this.getAdapter(SerializerFactory.COMPONENT_TYPE).write(out, name);
+      this.componentSerializer.write(out, name);
     }
 
     out.endObject();

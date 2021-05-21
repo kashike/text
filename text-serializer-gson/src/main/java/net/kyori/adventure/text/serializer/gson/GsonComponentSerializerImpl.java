@@ -47,7 +47,6 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     this.emitLegacyHover = emitLegacyHover;
     this.populator = builder -> {
       builder.registerTypeAdapterFactory(new SerializerFactory(downsampleColor, legacyHoverSerializer, emitLegacyHover));
-      builder.registerTypeHierarchyAdapter(Component.class, new ComponentSerializerImpl());
       return builder;
     };
     this.serializer = this.populator.apply(new GsonBuilder()).create();

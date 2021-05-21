@@ -64,7 +64,11 @@ final class SerializerFactory implements TypeAdapterFactory {
   @SuppressWarnings("unchecked")
   public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> type) {
     final Class<? super T> rawType = type.getRawType();
-    if(KEY_TYPE.isAssignableFrom(rawType)) {
+    if(COMPONENT_TYPE.isAssignableFrom(rawType)) {
+      // TODO: a better way of doing this?? This is hideous, it produces two instances of ComponentSerializerImpl:
+      //  one used exclusively in the StyleSerializer and this other one
+      return (TypeAdapter<T>) ComponentSerializerImpl.withStyleSerializer(gson.getAdapter(STYLE_TYPE));
+    } else if(KEY_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) KeySerializer.INSTANCE;
     } else if(STYLE_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) new StyleSerializer(this.legacyHoverSerializer, this.emitLegacyHover, gson::getAdapter);
