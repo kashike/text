@@ -29,7 +29,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.UUID;
-import java.util.function.Function;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -42,9 +41,8 @@ final class ShowEntitySerializer extends TypeAdapter<HoverEvent.ShowEntity> {
 
   private final TypeAdapter<Component> componentSerializer;
 
-  @SuppressWarnings("unchecked")
-  ShowEntitySerializer(final Function<Class<?>, TypeAdapter<?>> adapterGetter) {
-    this.componentSerializer = (TypeAdapter<Component>) adapterGetter.apply(SerializerFactory.COMPONENT_TYPE);
+  ShowEntitySerializer(final TypeAdapter<Component> componentSerializer) {
+    this.componentSerializer = componentSerializer;
   }
 
   @Override

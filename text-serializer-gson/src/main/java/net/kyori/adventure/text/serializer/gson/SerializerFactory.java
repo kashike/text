@@ -54,10 +54,21 @@ final class SerializerFactory implements TypeAdapterFactory {
   private final LegacyHoverEventSerializer legacyHoverSerializer;
   private final boolean emitLegacyHover;
 
+  private final TypeAdapter<TextColor> colorSerializer;
+  private final StyleSerializer styleSerializer;
+  private final TypeAdapter<Component> componentSerializer;
+  private final TypeAdapter<HoverEvent.ShowEntity> showEntitySerializer;
+
   SerializerFactory(final boolean downsampleColors, final @Nullable LegacyHoverEventSerializer legacyHoverSerializer, final boolean emitLegacyHover) {
     this.downsampleColors = downsampleColors;
     this.legacyHoverSerializer = legacyHoverSerializer;
     this.emitLegacyHover = emitLegacyHover;
+    this.colorSerializer = downsampleColors ? TextColorSerializer.DOWNSAMPLE_COLOR : TextColorSerializer.INSTANCE;
+
+    // TODO: this is hideous
+    this.styleSerializer = new StyleSerializer(legacyHoverSerializer, emitLegacyHover, this.colorSerializer);
+    this.componentSerializer = this.styleSerializer.getComponentSerializer();
+    this.showEntitySerializer = this.styleSerializer.getShowEntitySerializer();
   }
 
   @Override
@@ -65,13 +76,11 @@ final class SerializerFactory implements TypeAdapterFactory {
   public <T> TypeAdapter<T> create(final Gson gson, final TypeToken<T> type) {
     final Class<? super T> rawType = type.getRawType();
     if(COMPONENT_TYPE.isAssignableFrom(rawType)) {
-      // TODO: a better way of doing this?? This is hideous, it produces two instances of ComponentSerializerImpl:
-      //  one used exclusively in the StyleSerializer and this other one
-      return (TypeAdapter<T>) ComponentSerializerImpl.withStyleSerializer(gson.getAdapter(STYLE_TYPE));
+      return (TypeAdapter<T>) this.componentSerializer;
     } else if(KEY_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) KeySerializer.INSTANCE;
     } else if(STYLE_TYPE.isAssignableFrom(rawType)) {
-      return (TypeAdapter<T>) new StyleSerializer(this.legacyHoverSerializer, this.emitLegacyHover, gson::getAdapter);
+      return (TypeAdapter<T>) this.styleSerializer;
     } else if(CLICK_ACTION_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) ClickEventActionSerializer.INSTANCE;
     } else if(HOVER_ACTION_TYPE.isAssignableFrom(rawType)) {
@@ -79,11 +88,11 @@ final class SerializerFactory implements TypeAdapterFactory {
     } else if(SHOW_ITEM_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) ShowItemSerializer.INSTANCE;
     } else if(SHOW_ENTITY_TYPE.isAssignableFrom(rawType)) {
-      return (TypeAdapter<T>) new ShowEntitySerializer(gson::getAdapter);
+      return (TypeAdapter<T>) this.showEntitySerializer;
     } else if(COLOR_WRAPPER_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) TextColorWrapper.Serializer.INSTANCE;
     } else if(COLOR_TYPE.isAssignableFrom(rawType)) {
-      return (TypeAdapter<T>) (this.downsampleColors ? TextColorSerializer.DOWNSAMPLE_COLOR : TextColorSerializer.INSTANCE);
+      return (TypeAdapter<T>) this.colorSerializer;
     } else if(TEXT_DECORATION_TYPE.isAssignableFrom(rawType)) {
       return (TypeAdapter<T>) TextDecorationSerializer.INSTANCE;
     } else if(BLOCK_NBT_POS_TYPE.isAssignableFrom(rawType)) {

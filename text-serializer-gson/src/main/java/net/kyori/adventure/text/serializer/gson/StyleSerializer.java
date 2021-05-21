@@ -35,7 +35,6 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Set;
-import java.util.function.Function;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -82,25 +81,24 @@ final class StyleSerializer extends TypeAdapter<Style> {
 
   private final LegacyHoverEventSerializer legacyHover;
   private final boolean emitLegacyHover;
-  private final TypeAdapter<Component> componentSerializer;
   private final TypeAdapter<TextColor> colorSerializer;
+  private final TypeAdapter<Component> componentSerializer;
   private final TypeAdapter<HoverEvent.ShowEntity> showEntitySerializer;
-  private final Function<Class<?>, TypeAdapter<?>> adapterGetter;
 
-  @SuppressWarnings("unchecked")
-  StyleSerializer(final @Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final Function<Class<?>, TypeAdapter<?>> adapterGetter) {
+  StyleSerializer(final @Nullable LegacyHoverEventSerializer legacyHover, final boolean emitLegacyHover, final TypeAdapter<TextColor> colorSerializer) {
     this.legacyHover = legacyHover;
     this.emitLegacyHover = emitLegacyHover;
-    this.colorSerializer = (TypeAdapter<TextColor>) adapterGetter.apply(SerializerFactory.COLOR_TYPE);
-    this.showEntitySerializer = (TypeAdapter<HoverEvent.ShowEntity>) adapterGetter.apply(SerializerFactory.SHOW_ENTITY_TYPE);
-    this.adapterGetter = adapterGetter;
-
+    this.colorSerializer = colorSerializer;
     this.componentSerializer = ComponentSerializerImpl.withStyleSerializer(this);
+    this.showEntitySerializer = new ShowEntitySerializer(this.componentSerializer);
   }
 
-  @SuppressWarnings("unchecked")
-  private <T> TypeAdapter<T> getAdapter(final Class<T> type) {
-    return (TypeAdapter<T>) this.adapterGetter.apply(type);
+  public TypeAdapter<Component> getComponentSerializer() {
+    return this.componentSerializer;
+  }
+
+  public TypeAdapter<HoverEvent.ShowEntity> getShowEntitySerializer() {
+    return this.showEntitySerializer;
   }
 
   @Override
@@ -149,7 +147,16 @@ final class StyleSerializer extends TypeAdapter<Style> {
             final @Nullable Object value;
             if(hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
               final @Nullable JsonElement rawValue = hoverEventObject.get(HOVER_EVENT_CONTENTS);
-              value = this.getAdapter(action.type()).fromJsonTree(rawValue);
+              final Class<?> actionType = action.type();
+              if(SerializerFactory.COMPONENT_TYPE.isAssignableFrom(actionType)) {
+                value = this.componentSerializer.fromJsonTree(rawValue);
+              } else if(SerializerFactory.SHOW_ITEM_TYPE.isAssignableFrom(actionType)) {
+                value = ShowItemSerializer.INSTANCE.fromJsonTree(rawValue);
+              } else if(SerializerFactory.SHOW_ENTITY_TYPE.isAssignableFrom(actionType)) {
+                value = this.showEntitySerializer.fromJsonTree(rawValue);
+              } else {
+                value = null;
+              }
             } else if(hoverEventObject.has(HOVER_EVENT_VALUE)) {
               final Component rawValue = this.componentSerializer.fromJsonTree(hoverEventObject.get(HOVER_EVENT_VALUE));
               value = this.legacyHoverEventContents(action, rawValue);
