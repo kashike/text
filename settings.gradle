@@ -9,6 +9,7 @@ include "bom"
 include "extra-kotlin"
 include "key"
 include "nbt"
+include "nbt-extra-kotlin"
 include "serializer-configurate3"
 include "serializer-configurate4"
 include "text-serializer-gson"
@@ -22,6 +23,7 @@ include "text-serializer-plain"
   "extra-kotlin",
   "key",
   "nbt",
+  "nbt-extra-kotlin",
   "serializer-configurate3",
   "serializer-configurate4",
   "text-serializer-gson",

@@ -1,0 +1,24 @@
+plugins {
+  id("org.jetbrains.kotlin.jvm") version "1.4.32"
+}
+
+compileKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+    freeCompilerArgs += ["-Xexplicit-api=strict"]
+  }
+}
+
+compileTestKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+
+dependencies {
+  api(project(":adventure-nbt"))
+  implementation("org.jetbrains.kotlin:kotlin-stdlib")
+  testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+}
+
+applyJarMetadata(this, "net.kyori.adventure.nbt.extra.kotlin")
