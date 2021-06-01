@@ -93,14 +93,6 @@ final class StyleSerializer extends TypeAdapter<Style> {
     this.showEntitySerializer = new ShowEntitySerializer(this.componentSerializer);
   }
 
-  public TypeAdapter<Component> componentSerializer() {
-    return this.componentSerializer;
-  }
-
-  public TypeAdapter<HoverEvent.ShowEntity> showEntitySerializer() {
-    return this.showEntitySerializer;
-  }
-
   @Override
   public Style read(final JsonReader in) throws IOException {
     in.beginObject();
