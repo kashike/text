@@ -52,6 +52,13 @@
     <!-- https://checkstyle.org/config_misc.html#CommentsIndentation -->
     <module name="CommentsIndentation"/>
 
+    <!-- https://checkstyle.org/config_imports.html#CustomImportOrder -->
+    <module name="CustomImportOrder">
+      <property name="customImportOrderRules" value="THIRD_PARTY_PACKAGE###STATIC"/>
+      <property name="standardPackageRegExp" value="^$"/>
+      <property name="sortImportsInGroupAlphabetically" value="true"/>
+    </module>
+
     <!-- https://checkstyle.org/config_whitespace.html#EmptyForInitializerPad -->
     <module name="EmptyForInitializerPad"/>
 

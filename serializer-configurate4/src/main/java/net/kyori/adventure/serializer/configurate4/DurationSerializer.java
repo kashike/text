@@ -27,8 +27,8 @@ import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.function.Predicate;
-import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 /**

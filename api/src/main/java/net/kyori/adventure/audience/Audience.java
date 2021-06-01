@@ -26,14 +26,15 @@ package net.kyori.adventure.audience;
 import java.util.Arrays;
 import java.util.stream.Collector;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
-import net.kyori.adventure.identity.Identified;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -77,7 +78,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @see ForwardingAudience
  * @since 4.0.0
  */
-public interface Audience {
+public interface Audience extends Pointered {
   /**
    * Gets an audience that does nothing.
    *

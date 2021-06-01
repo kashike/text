@@ -23,17 +23,19 @@
  */
 package net.kyori.adventure.text.serializer.legacy;
 
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.flattener.ComponentFlattener;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A legacy component serializer.
@@ -55,7 +57,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @since 4.0.0
    */
   static @NonNull LegacyComponentSerializer legacySection() {
-    return LegacyComponentSerializerImpl.SECTION_SERIALIZER;
+    return LegacyComponentSerializerImpl.Instances.SECTION;
   }
 
   /**
@@ -69,7 +71,7 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
    * @since 4.0.0
    */
   static @NonNull LegacyComponentSerializer legacyAmpersand() {
-    return LegacyComponentSerializerImpl.AMPERSAND_SERIALIZER;
+    return LegacyComponentSerializerImpl.Instances.AMPERSAND;
   }
 
   /**
@@ -260,5 +262,40 @@ public interface LegacyComponentSerializer extends ComponentSerializer<Component
      */
     @Override
     @NonNull LegacyComponentSerializer build();
+  }
+
+  /**
+   * A {@link LegacyComponentSerializer} service provider.
+   *
+   * @since 4.8.0
+   */
+  @ApiStatus.Internal
+  interface Provider {
+    /**
+     * Provides a {@link LegacyComponentSerializer} using {@link #AMPERSAND_CHAR}.
+     *
+     * @return a {@link LegacyComponentSerializer}
+     * @since 4.8.0
+     */
+    @ApiStatus.Internal
+    @NonNull LegacyComponentSerializer legacyAmpersand();
+
+    /**
+     * Provides a {@link LegacyComponentSerializer} using {@link #SECTION_CHAR}.
+     *
+     * @return a {@link LegacyComponentSerializer}
+     * @since 4.8.0
+     */
+    @ApiStatus.Internal
+    @NonNull LegacyComponentSerializer legacySection();
+
+    /**
+     * Completes the building process of {@link Builder}.
+     *
+     * @return a {@link Consumer}
+     * @since 4.8.0
+     */
+    @ApiStatus.Internal
+    @NonNull Consumer<Builder> legacy();
   }
 }

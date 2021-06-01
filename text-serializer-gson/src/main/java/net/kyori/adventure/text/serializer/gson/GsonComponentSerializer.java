@@ -26,12 +26,14 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * A gson component serializer.
@@ -49,7 +51,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * @since 4.0.0
    */
   static @NonNull GsonComponentSerializer gson() {
-    return GsonComponentSerializerImpl.INSTANCE;
+    return GsonComponentSerializerImpl.Instances.INSTANCE;
   }
 
   /**
@@ -62,7 +64,7 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
    * @since 4.0.0
    */
   static @NonNull GsonComponentSerializer colorDownsamplingGson() {
-    return GsonComponentSerializerImpl.LEGACY_INSTANCE;
+    return GsonComponentSerializerImpl.Instances.LEGACY_INSTANCE;
   }
 
   /**
@@ -152,5 +154,40 @@ public interface GsonComponentSerializer extends ComponentSerializer<Component, 
      */
     @Override
     @NonNull GsonComponentSerializer build();
+  }
+
+  /**
+   * A {@link GsonComponentSerializer} service provider.
+   *
+   * @since 4.8.0
+   */
+  @ApiStatus.Internal
+  interface Provider {
+    /**
+     * Provides a standard {@link GsonComponentSerializer}.
+     *
+     * @return a {@link GsonComponentSerializer}
+     * @since 4.8.0
+     */
+    @ApiStatus.Internal
+    @NonNull GsonComponentSerializer gson();
+
+    /**
+     * Provides a legacy {@link GsonComponentSerializer}.
+     *
+     * @return a {@link GsonComponentSerializer}
+     * @since 4.8.0
+     */
+    @ApiStatus.Internal
+    @NonNull GsonComponentSerializer gsonLegacy();
+
+    /**
+     * Completes the building process of {@link Builder}.
+     *
+     * @return a {@link Consumer}
+     * @since 4.8.0
+     */
+    @ApiStatus.Internal
+    @NonNull Consumer<Builder> builder();
   }
 }

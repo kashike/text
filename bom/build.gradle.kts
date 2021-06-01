@@ -1,16 +1,17 @@
 plugins {
   id("java-platform")
+  id("adventure.base-conventions")
 }
 
 indra {
   configurePublications {
-    from components.javaPlatform
+    from(components["javaPlatform"])
   }
 }
 
 dependencies {
   constraints {
-    [
+    sequenceOf(
       "api",
       "extra-kotlin",
       "key",
@@ -21,7 +22,7 @@ dependencies {
       "text-serializer-gson-legacy-impl",
       "text-serializer-legacy",
       "text-serializer-plain"
-    ].each {
+    ).forEach {
       api(project(":adventure-$it"))
     }
   }

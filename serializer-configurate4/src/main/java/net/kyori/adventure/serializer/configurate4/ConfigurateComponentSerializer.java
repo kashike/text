@@ -25,10 +25,10 @@ package net.kyori.adventure.serializer.configurate4;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A serializer that will output to Configurate {@link ConfigurationNode}s.

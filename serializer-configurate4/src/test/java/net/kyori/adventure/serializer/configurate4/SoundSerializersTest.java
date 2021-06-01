@@ -27,8 +27,8 @@ import com.google.common.collect.ImmutableMap;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
-import org.spongepowered.configurate.ConfigurationNode;
 import org.junit.jupiter.api.Test;
+import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

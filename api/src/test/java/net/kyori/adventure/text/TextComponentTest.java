@@ -142,18 +142,6 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     assertTrue(component.contains(child));
   }
 
-  // https://github.com/KyoriPowered/adventure/issues/363
-  @Test
-  void testContainsEquality() {
-    final Component c0 = Component.text("best!");
-    final Component c1 = Component.text()
-      .append(Component.text("Nero "))
-      .append(Component.text(" are the ").append(c0))
-      .build();
-
-    assertTrue(c1.contains(Component.text("best!"), Component.EQUALS));
-  }
-
   @Test
   void testContent() {
     final TextComponent c0 = Component.text("foo");

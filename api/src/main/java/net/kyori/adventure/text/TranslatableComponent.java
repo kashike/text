@@ -25,8 +25,10 @@ package net.kyori.adventure.text;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.translation.TranslationRegistry;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.Contract;
@@ -64,6 +66,18 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.0.0
    */
   @NonNull String key();
+
+  /**
+   * Sets the translation key.
+   *
+   * @param translatable the translatable object to get the key from
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(pure = true)
+  default @NonNull TranslatableComponent key(final @NonNull Translatable translatable) {
+    return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
+  }
 
   /**
    * Sets the translation key.
@@ -109,6 +123,18 @@ public interface TranslatableComponent extends BuildableComponent<TranslatableCo
    * @since 4.0.0
    */
   interface Builder extends ComponentBuilder<TranslatableComponent, Builder> {
+    /**
+     * Sets the translation key.
+     *
+     * @param translatable the translatable object to get the key from
+     * @return this builder
+     * @since 4.8.0
+     */
+    @Contract(pure = true)
+    default @NonNull Builder key(final @NonNull Translatable translatable) {
+      return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
+    }
+
     /**
      * Sets the translation key.
      *

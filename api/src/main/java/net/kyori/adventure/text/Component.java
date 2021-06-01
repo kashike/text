@@ -44,6 +44,7 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.Buildable;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
@@ -1097,6 +1098,18 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Creates a translatable component with a translation key.
+   *
+   * @param translatable the translatable object to get the key from
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), Style.empty());
+  }
+
+  /**
    * Creates a translatable component with a translation key and styling.
    *
    * @param key the translation key
@@ -1110,6 +1123,19 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Creates a translatable component with a translation key and styling.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param style the style
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @NonNull Style style) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), style);
+  }
+
+  /**
    * Creates a translatable component with a translation key, and optional color.
    *
    * @param key the translation key
@@ -1120,6 +1146,19 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color) {
     return translatable(key, Style.style(color));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, and optional color.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param color the color
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @Nullable TextColor color) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), color);
   }
 
   /**
@@ -1139,6 +1178,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   /**
    * Creates a translatable component with a translation key, and optional color and decorations.
    *
+   * @param translatable the translatable object to get the key from
+   * @param color the color
+   * @param decorations the decorations
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @Nullable TextColor color, final TextDecoration@NonNull... decorations) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), color, decorations);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, and optional color and decorations.
+   *
    * @param key the translation key
    * @param color the color
    * @param decorations the decorations
@@ -1148,6 +1201,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
     return translatable(key, Style.style(color, decorations));
+  }
+
+  /**
+   * Creates a translatable component with a translation key, and optional color and decorations.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param color the color
+   * @param decorations the decorations
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), color, decorations);
   }
 
   /**
@@ -1161,6 +1228,19 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull ComponentLike@NonNull... args) {
     return translatable(key, Style.empty(), args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key and arguments.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @NonNull ComponentLike@NonNull... args) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), args);
   }
 
   /**
@@ -1178,6 +1258,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Creates a translatable component with a translation key and styling.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param style the style
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @NonNull Style style, final @NonNull ComponentLike@NonNull... args) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), style, args);
+  }
+
+  /**
    * Creates a translatable component with a translation key, arguments, and optional color.
    *
    * @param key the translation key
@@ -1189,6 +1283,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull ComponentLike@NonNull... args) {
     return translatable(key, Style.style(color), args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, arguments, and optional color.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param color the color
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @Nullable TextColor color, final @NonNull ComponentLike@NonNull... args) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), color, args);
   }
 
   /**
@@ -1207,6 +1315,21 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Creates a translatable component with a translation key, arguments, and optional color and decorations.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param color the color
+   * @param decorations the decorations
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull ComponentLike@NonNull... args) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), color, decorations, args);
+  }
+
+  /**
    * Creates a translatable component with a translation key and arguments.
    *
    * @param key the translation key
@@ -1217,6 +1340,19 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @NonNull List<? extends ComponentLike> args) {
     return new TranslatableComponentImpl(Collections.emptyList(), Style.empty(), key, args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key and arguments.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @NonNull List<? extends ComponentLike> args) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), args);
   }
 
   /**
@@ -1234,6 +1370,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Creates a translatable component with a translation key and styling.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param style the style
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @NonNull Style style, final @NonNull List<? extends ComponentLike> args) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), style, args);
+  }
+
+  /**
    * Creates a translatable component with a translation key, arguments, and optional color.
    *
    * @param key the translation key
@@ -1245,6 +1395,20 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _, _ -> new", pure = true)
   static TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull List<? extends ComponentLike> args) {
     return translatable(key, Style.style(color), args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, arguments, and optional color.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param color the color
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static TranslatableComponent translatable(final @NonNull Translatable translatable, final @Nullable TextColor color, final @NonNull List<? extends ComponentLike> args) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), color, args);
   }
 
   /**
@@ -1260,6 +1424,21 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _, _, _ -> new", pure = true)
   static @NonNull TranslatableComponent translatable(final @NonNull String key, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull List<? extends ComponentLike> args) {
     return translatable(key, Style.style(color, decorations), args);
+  }
+
+  /**
+   * Creates a translatable component with a translation key, arguments, and optional color and decorations.
+   *
+   * @param translatable the translatable object to get the key from
+   * @param color the color
+   * @param decorations the decorations
+   * @param args the translation arguments
+   * @return a translatable component
+   * @since 4.8.0
+   */
+  @Contract(value = "_, _, _, _ -> new", pure = true)
+  static @NonNull TranslatableComponent translatable(final @NonNull Translatable translatable, final @Nullable TextColor color, final @NonNull Set<TextDecoration> decorations, final @NonNull List<? extends ComponentLike> args) {
+    return translatable(Objects.requireNonNull(translatable, "translatable").translationKey(), color, decorations, args);
   }
 
   /**
@@ -1313,10 +1492,16 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
     }
     final @Nullable HoverEvent<?> hoverEvent = this.hoverEvent();
     if(hoverEvent != null) {
-      if(hoverEvent.action().type().isAssignableFrom(Component.class)) {
-        final Component hover = (Component) hoverEvent.value();
-        if(that == hover) return true;
-        for(final Component child : hover.children()) {
+      final Object value = hoverEvent.value();
+      Component component = null;
+      if(value instanceof Component) {
+        component = (Component) hoverEvent.value();
+      } else if(value instanceof HoverEvent.ShowEntity) {
+        component = ((HoverEvent.ShowEntity) value).name();
+      }
+      if(component != null) {
+        if(equals.test(that, component)) return true;
+        for(final Component child : component.children()) {
           if(child.contains(that, equals)) return true;
         }
       }

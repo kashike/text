@@ -27,11 +27,11 @@ import java.lang.reflect.Type;
 import java.util.List;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class BookTypeSerializer implements TypeSerializer<Book> {
   static final BookTypeSerializer INSTANCE = new BookTypeSerializer();

@@ -23,12 +23,11 @@
  */
 package net.kyori.adventure.util;
 
+import java.util.stream.Stream;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.common.value.qual.IntRange;
-
-import java.util.stream.Stream;
 
 /**
  * Something that can provide hue, saturation, and value color components.

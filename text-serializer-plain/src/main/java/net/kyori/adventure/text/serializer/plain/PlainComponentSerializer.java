@@ -36,40 +36,42 @@ import net.kyori.adventure.util.Buildable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A plain component serializer.
  *
  * <p>Plain does <b>not</b> support more complex features such as, but not limited
  * to, colours, decorations, {@link ClickEvent}, and {@link HoverEvent}.</p>
  *
+ * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer} instead
  * @since 4.0.0
  */
+@Deprecated
 public class PlainComponentSerializer implements ComponentSerializer<Component, TextComponent, String>, Buildable<PlainComponentSerializer, PlainComponentSerializer.Builder> {
-  private static final PlainComponentSerializer INSTANCE = builder().build();
-
   /**
    * A component serializer for plain-based serialization and deserialization.
    *
    * @return serializer instance
+   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer#plainText()} instead
    * @since 4.0.0
    */
+  @Deprecated
   public static @NonNull PlainComponentSerializer plain() {
-    return INSTANCE;
+    return PlainComponentSerializerImpl.INSTANCE;
   }
 
   /**
    * Create a new builder.
    *
    * @return a new plain serializer builder
+   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer#builder()} instead
    * @since 4.7.0
    */
+  @Deprecated
   public static PlainComponentSerializer.@NonNull Builder builder() {
     return new PlainComponentSerializerImpl.BuilderImpl();
   }
 
-  private final ComponentFlattener flattener;
+  @Deprecated final PlainTextComponentSerializer serializer;
 
   /**
    * Constructs.
@@ -79,7 +81,7 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    */
   @Deprecated
   public PlainComponentSerializer() {
-    this(ComponentFlattener.basic());
+    this(PlainTextComponentSerializer.plainText());
   }
 
   /**
@@ -92,26 +94,22 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    */
   @Deprecated
   public PlainComponentSerializer(final @Nullable Function<KeybindComponent, String> keybind, final @Nullable Function<TranslatableComponent, String> translatable) {
-    final ComponentFlattener.Builder builder = ComponentFlattener.basic().toBuilder();
-    if(keybind != null) builder.mapper(KeybindComponent.class, keybind);
-    if(translatable != null) builder.mapper(TranslatableComponent.class, translatable);
-    this.flattener = builder.build();
+    this(PlainComponentSerializerImpl.createRealSerializerFromLegacyFunctions(keybind, translatable));
   }
 
-  PlainComponentSerializer(final @NonNull ComponentFlattener flattener) {
-    this.flattener = flattener;
+  @Deprecated
+  PlainComponentSerializer(final @NonNull PlainTextComponentSerializer serializer) {
+    this.serializer = serializer;
   }
 
   @Override
   public @NonNull TextComponent deserialize(final @NonNull String input) {
-    return Component.text(input);
+    return this.serializer.deserialize(input);
   }
 
   @Override
   public @NonNull String serialize(final @NonNull Component component) {
-    final StringBuilder sb = new StringBuilder();
-    this.serialize(sb, component);
-    return sb.toString();
+    return this.serializer.serialize(component);
   }
 
   /**
@@ -119,25 +117,27 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
    *
    * @param sb the string builder
    * @param component the component
+   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer#serialize(StringBuilder, Component)} instead
    * @since 4.0.0
    */
-  @SuppressWarnings("deprecation")
+  @Deprecated
   public void serialize(final @NonNull StringBuilder sb, final @NonNull Component component) {
-    this.flattener.flatten(requireNonNull(component, "component"), sb::append);
+    this.serializer.serialize(sb, component);
   }
 
   @Override
   public PlainComponentSerializer.@NonNull Builder toBuilder() {
-    return new PlainComponentSerializerImpl.BuilderImpl(this.flattener);
+    return new PlainComponentSerializerImpl.BuilderImpl(this);
   }
 
   /**
    * A builder for the plain component serializer.
    *
+   * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer.Builder} instead
    * @since 4.7.0
    */
+  @Deprecated
   public interface Builder extends Buildable.Builder<PlainComponentSerializer> {
-
     /**
      * Set the component flattener to use.
      *
@@ -145,9 +145,10 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
      *
      * @param flattener the new flattener
      * @return this builder
+     * @deprecated for removal since 4.8.0, use {@link PlainTextComponentSerializer.Builder#flattener(ComponentFlattener)} instead
      * @since 4.7.0
      */
+    @Deprecated
     @NonNull Builder flattener(final @NonNull ComponentFlattener flattener);
-
   }
 }

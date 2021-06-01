@@ -25,6 +25,10 @@ package net.kyori.adventure.identity;
 
 import java.util.UUID;
 import java.util.stream.Stream;
+import net.kyori.adventure.Adventure;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.pointer.Pointer;
+import net.kyori.adventure.text.Component;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -37,6 +41,25 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @sinceMinecraft 1.16
  */
 public interface Identity extends Examinable {
+  /**
+   * A pointer to a name.
+   *
+   * @since 4.8.0
+   */
+  Pointer<String> NAME = Pointer.pointer(String.class, Key.key(Adventure.NAMESPACE, "name"));
+  /**
+   * A pointer to a {@link UUID}.
+   *
+   * @since 4.8.0
+   */
+  Pointer<UUID> UUID = Pointer.pointer(UUID.class, Key.key(Adventure.NAMESPACE, "uuid"));
+  /**
+   * A pointer to a display name.
+   *
+   * @since 4.8.0
+   */
+  Pointer<Component> DISPLAY_NAME = Pointer.pointer(Component.class, Key.key(Adventure.NAMESPACE, "display_name"));
+
   /**
    * Gets the {@code null} identity.
    *

@@ -26,11 +26,11 @@ package net.kyori.adventure.serializer.configurate4;
 import java.lang.reflect.Type;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class SoundSerializer implements TypeSerializer<Sound> {
   static final SoundSerializer INSTANCE = new SoundSerializer();

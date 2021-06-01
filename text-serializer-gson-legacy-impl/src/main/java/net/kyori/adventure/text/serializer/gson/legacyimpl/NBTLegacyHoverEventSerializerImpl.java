@@ -23,6 +23,8 @@
  */
 package net.kyori.adventure.text.serializer.gson.legacyimpl;
 
+import java.io.IOException;
+import java.util.UUID;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.TagStringIO;
@@ -33,9 +35,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.gson.LegacyHoverEventSerializer;
 import net.kyori.adventure.util.Codec;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.io.IOException;
-import java.util.UUID;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class NBTLegacyHoverEventSerializerImpl implements LegacyHoverEventSerializer {

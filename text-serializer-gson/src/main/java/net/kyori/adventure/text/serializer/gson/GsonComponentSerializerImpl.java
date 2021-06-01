@@ -26,14 +26,31 @@ package net.kyori.adventure.text.serializer.gson;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.Services;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class GsonComponentSerializerImpl implements GsonComponentSerializer {
-  static final GsonComponentSerializer INSTANCE = new GsonComponentSerializerImpl(false, null, false);
-  static final GsonComponentSerializer LEGACY_INSTANCE = new GsonComponentSerializerImpl(true, null, true);
+  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  static final Consumer<Builder> BUILDER = SERVICE
+    .map(Provider::builder)
+    .orElseGet(() -> builder -> {
+      // NOOP
+    });
+
+  // We cannot store these fields in GsonComponentSerializerImpl directly due to class initialisation issues.
+  static final class Instances {
+    static final GsonComponentSerializer INSTANCE = SERVICE
+      .map(Provider::gson)
+      .orElseGet(() -> new GsonComponentSerializerImpl(false, null, false));
+    static final GsonComponentSerializer LEGACY_INSTANCE = SERVICE
+      .map(Provider::gsonLegacy)
+      .orElseGet(() -> new GsonComponentSerializerImpl(true, null, true));
+  }
 
   private final Gson serializer;
   private final UnaryOperator<GsonBuilder> populator;
@@ -86,9 +103,8 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     return this.serializer().toJsonTree(component);
   }
 
-  @NonNull
   @Override
-  public Builder toBuilder() {
+  public @NonNull Builder toBuilder() {
     return new BuilderImpl(this);
   }
 
@@ -98,9 +114,11 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     private boolean emitLegacyHover = false;
 
     BuilderImpl() {
+      BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
     }
 
     BuilderImpl(final GsonComponentSerializerImpl serializer) {
+      this();
       this.downsampleColor = serializer.downsampleColor;
       this.emitLegacyHover = serializer.emitLegacyHover;
       this.legacyHoverSerializer = serializer.legacyHoverSerializer;
@@ -127,7 +145,7 @@ final class GsonComponentSerializerImpl implements GsonComponentSerializer {
     @Override
     public @NonNull GsonComponentSerializer build() {
       if(this.legacyHoverSerializer == null) {
-        return this.downsampleColor ? LEGACY_INSTANCE : INSTANCE;
+        return this.downsampleColor ? Instances.LEGACY_INSTANCE : Instances.INSTANCE;
       } else {
         return new GsonComponentSerializerImpl(this.downsampleColor, this.legacyHoverSerializer, this.emitLegacyHover);
       }

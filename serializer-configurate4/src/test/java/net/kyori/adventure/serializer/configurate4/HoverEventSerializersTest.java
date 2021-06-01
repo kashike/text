@@ -30,8 +30,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
-import org.spongepowered.configurate.ConfigurationNode;
 import org.junit.jupiter.api.Test;
+import org.spongepowered.configurate.ConfigurationNode;
 
 class HoverEventSerializersTest implements ConfigurateTestBase {
   @Test

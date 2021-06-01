@@ -26,8 +26,10 @@ package net.kyori.adventure.text.format;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import net.kyori.adventure.util.HSVLike;
 import net.kyori.adventure.util.Index;
+import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -228,7 +230,7 @@ public final class NamedTextColor implements TextColor {
    */
   private static float distance(final @NonNull HSVLike self, final @NonNull HSVLike other) {
     // weight hue more heavily than saturation and brightness. kind of magic numbers, but is fine for our use case of downsampling to a set of colors
-    final float hueDistance = 3 * Math.abs(self.h() - other.h());
+    final float hueDistance = 3 * Math.min(Math.abs(self.h() - other.h()), 1f - Math.abs(self.h() - other.h()));
     final float saturationDiff = self.s() - other.s();
     final float valueDiff = self.v() - other.v();
     return hueDistance * hueDistance + saturationDiff * saturationDiff + valueDiff * valueDiff;
@@ -257,5 +259,13 @@ public final class NamedTextColor implements TextColor {
   @Override
   public @NonNull String toString() {
     return this.name;
+  }
+
+  @Override
+  public @NonNull Stream<? extends ExaminableProperty> examinableProperties() {
+    return Stream.concat(
+      Stream.of(ExaminableProperty.of("name", this.name)),
+      TextColor.super.examinableProperties()
+    );
   }
 }

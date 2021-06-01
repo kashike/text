@@ -27,9 +27,9 @@ import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 final class KeySerializer extends ScalarSerializer<Key> {

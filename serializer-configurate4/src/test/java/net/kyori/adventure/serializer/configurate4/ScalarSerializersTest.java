@@ -28,8 +28,8 @@ import java.time.temporal.ChronoUnit;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.spongepowered.configurate.ConfigurationNode;
 import org.junit.jupiter.api.Test;
+import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -368,6 +368,27 @@ final class StyleImpl implements Style {
       throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
     }
 
+    @NonNull Builder decorationIfAbsent(final @NonNull TextDecoration decoration, final TextDecoration.@NonNull State state) {
+      requireNonNull(state, "state");
+      if(decoration == TextDecoration.BOLD && this.bold == TextDecoration.State.NOT_SET) {
+        this.bold = state;
+        return this;
+      } else if(decoration == TextDecoration.ITALIC && this.italic == TextDecoration.State.NOT_SET) {
+        this.italic = state;
+        return this;
+      } else if(decoration == TextDecoration.UNDERLINED && this.underlined == TextDecoration.State.NOT_SET) {
+        this.underlined = state;
+        return this;
+      } else if(decoration == TextDecoration.STRIKETHROUGH && this.strikethrough == TextDecoration.State.NOT_SET) {
+        this.strikethrough = state;
+        return this;
+      } else if(decoration == TextDecoration.OBFUSCATED && this.obfuscated == TextDecoration.State.NOT_SET) {
+        this.obfuscated = state;
+        return this;
+      }
+      throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+    }
+
     @Override
     public @NonNull Builder clickEvent(final @Nullable ClickEvent event) {
       this.clickEvent = event;
@@ -388,54 +409,54 @@ final class StyleImpl implements Style {
 
     @Override
     public @NonNull Builder merge(final @NonNull Style that, final Merge.@NonNull Strategy strategy, final @NonNull Set<Merge> merges) {
-      if(that.isEmpty() || strategy == Merge.Strategy.NEVER || merges.isEmpty()) {
+      if(strategy == Merge.Strategy.NEVER || that.isEmpty() || merges.isEmpty()) {
         // nothing to merge
         return this;
       }
 
-      final MergeLogic logic = mergeLogic(strategy);
+      final Merger merger = merger(strategy);
 
       if(merges.contains(Merge.COLOR)) {
         final TextColor color = that.color();
-        if(color != null && logic.mergeColor(this, color)) this.color(color);
+        if(color != null) merger.mergeColor(this, color);
       }
 
       if(merges.contains(Merge.DECORATIONS)) {
         for(int i = 0, length = DECORATIONS.length; i < length; i++) {
           final TextDecoration decoration = DECORATIONS[i];
           final TextDecoration.State state = that.decoration(decoration);
-          if(state != TextDecoration.State.NOT_SET && logic.mergeDecoration(this, decoration)) this.decoration(decoration, state);
+          if(state != TextDecoration.State.NOT_SET) merger.mergeDecoration(this, decoration, state);
         }
       }
 
       if(merges.contains(Merge.EVENTS)) {
         final ClickEvent clickEvent = that.clickEvent();
-        if(clickEvent != null && logic.mergeClickEvent(this, clickEvent)) this.clickEvent(clickEvent);
+        if(clickEvent != null) merger.mergeClickEvent(this, clickEvent);
 
         final HoverEvent<?> hoverEvent = that.hoverEvent();
-        if(hoverEvent != null && logic.mergeHoverEvent(this, hoverEvent)) this.hoverEvent(hoverEvent);
+        if(hoverEvent != null) merger.mergeHoverEvent(this, hoverEvent);
       }
 
       if(merges.contains(Merge.INSERTION)) {
         final String insertion = that.insertion();
-        if(insertion != null && logic.mergeInsertion(this, insertion)) this.insertion(insertion);
+        if(insertion != null) merger.mergeInsertion(this, insertion);
       }
 
       if(merges.contains(Merge.FONT)) {
         final Key font = that.font();
-        if(font != null && logic.mergeFont(this, font)) this.font(font);
+        if(font != null) merger.mergeFont(this, font);
       }
 
       return this;
     }
 
-    private static MergeLogic mergeLogic(final Merge.Strategy strategy) {
+    private static Merger merger(final Merge.Strategy strategy) {
       if(strategy == Merge.Strategy.ALWAYS) {
-        return MergeLogic.Constant.TRUE;
+        return AlwaysMerger.INSTANCE;
       } else if(strategy == Merge.Strategy.NEVER) {
-        return MergeLogic.Constant.FALSE;
+        throw new UnsupportedOperationException();
       } else if(strategy == Merge.Strategy.IF_ABSENT_ON_TARGET) {
-        return MergeLogic.IfAbsentOnTarget.INSTANCE;
+        return IfAbsentOnTargetMerger.INSTANCE;
       }
       throw new IllegalArgumentException(strategy.name());
     }
@@ -459,108 +480,6 @@ final class StyleImpl implements Style {
         && this.hoverEvent == null
         && this.insertion == null
         && this.font == null;
-    }
-  }
-
-  static abstract class MergeLogic {
-    abstract boolean mergeColor(final BuilderImpl target, final @Nullable TextColor color);
-
-    abstract boolean mergeDecoration(final BuilderImpl target, final @NonNull TextDecoration decoration);
-
-    abstract boolean mergeClickEvent(final BuilderImpl target, final @Nullable ClickEvent event);
-
-    abstract boolean mergeHoverEvent(final BuilderImpl target, final @Nullable HoverEvent<?> event);
-
-    abstract boolean mergeInsertion(final BuilderImpl target, final @Nullable String insertion);
-
-    abstract boolean mergeFont(final BuilderImpl target, final @Nullable Key font);
-
-    static final class Constant extends MergeLogic {
-      static final Constant FALSE = new Constant(false);
-      static final Constant TRUE = new Constant(true);
-      private final boolean value;
-
-      private Constant(final boolean value) {
-        this.value = value;
-      }
-
-      @Override
-      boolean mergeColor(final BuilderImpl target, final @Nullable TextColor color) {
-        return this.value;
-      }
-
-      @Override
-      boolean mergeDecoration(final BuilderImpl target, final @NonNull TextDecoration decoration) {
-        return this.value;
-      }
-
-      @Override
-      boolean mergeClickEvent(final BuilderImpl target, final @Nullable ClickEvent event) {
-        return this.value;
-      }
-
-      @Override
-      boolean mergeHoverEvent(final BuilderImpl target, final @Nullable HoverEvent<?> event) {
-        return this.value;
-      }
-
-      @Override
-      boolean mergeInsertion(final BuilderImpl target, final @Nullable String insertion) {
-        return this.value;
-      }
-
-      @Override
-      boolean mergeFont(final BuilderImpl target, final @Nullable Key font) {
-        return this.value;
-      }
-    }
-
-    static final class IfAbsentOnTarget extends MergeLogic {
-      static final IfAbsentOnTarget INSTANCE = new IfAbsentOnTarget();
-
-      private IfAbsentOnTarget() {
-      }
-
-      @Override
-      boolean mergeColor(final BuilderImpl target, final @Nullable TextColor color) {
-        return target.color == null;
-      }
-
-      @Override
-      boolean mergeDecoration(final BuilderImpl target, final @NonNull TextDecoration decoration) {
-        if(decoration == TextDecoration.OBFUSCATED) {
-          return target.obfuscated == TextDecoration.State.NOT_SET;
-        } else if(decoration == TextDecoration.BOLD) {
-          return target.bold == TextDecoration.State.NOT_SET;
-        } else if(decoration == TextDecoration.STRIKETHROUGH) {
-          return target.strikethrough == TextDecoration.State.NOT_SET;
-        } else if(decoration == TextDecoration.UNDERLINED) {
-          return target.underlined == TextDecoration.State.NOT_SET;
-        } else if(decoration == TextDecoration.ITALIC) {
-          return target.italic == TextDecoration.State.NOT_SET;
-        }
-        throw new IllegalArgumentException();
-      }
-
-      @Override
-      boolean mergeClickEvent(final BuilderImpl target, final @Nullable ClickEvent event) {
-        return target.clickEvent == null;
-      }
-
-      @Override
-      boolean mergeHoverEvent(final BuilderImpl target, final @Nullable HoverEvent<?> event) {
-        return target.hoverEvent == null;
-      }
-
-      @Override
-      boolean mergeInsertion(final BuilderImpl target, final @Nullable String insertion) {
-        return target.insertion == null;
-      }
-
-      @Override
-      boolean mergeFont(final BuilderImpl target, final @Nullable Key font) {
-        return target.font == null;
-      }
     }
   }
 }

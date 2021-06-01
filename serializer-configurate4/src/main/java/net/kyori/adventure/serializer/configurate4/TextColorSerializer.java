@@ -27,8 +27,8 @@ import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 final class TextColorSerializer extends ScalarSerializer<TextColor> {

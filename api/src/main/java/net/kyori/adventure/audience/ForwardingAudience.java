@@ -24,15 +24,19 @@
 package net.kyori.adventure.audience;
 
 import java.util.Collections;
+import java.util.Optional;
+import java.util.function.Supplier;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -54,6 +58,21 @@ public interface ForwardingAudience extends Audience {
    */
   @ApiStatus.OverrideOnly
   @NonNull Iterable<? extends Audience> audiences();
+
+  @Override
+  default <T> @NonNull Optional<T> get(final @NonNull Pointer<T> pointer) {
+    return Optional.empty(); // unsupported
+  }
+
+  @Override
+  default <T> @PolyNull T getOrDefault(final @NonNull Pointer<T> pointer, final @PolyNull T defaultValue) {
+    return defaultValue; // unsupported
+  }
+
+  @Override
+  default <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
+    return defaultValue.get(); // unsupported
+  }
 
   @Override
   default void sendMessage(final @NonNull Identified source, final @NonNull Component message, final @NonNull MessageType type) {
@@ -155,6 +174,21 @@ public interface ForwardingAudience extends Audience {
     @Override
     default @NonNull Iterable<? extends Audience> audiences() {
       return Collections.singleton(this.audience());
+    }
+
+    @Override
+    default <T> @NonNull Optional<T> get(final @NonNull Pointer<T> pointer) {
+      return this.audience().get(pointer);
+    }
+
+    @Override
+    default <T> @PolyNull T getOrDefault(final @NonNull Pointer<T> pointer, final @PolyNull T defaultValue) {
+      return this.audience().getOrDefault(pointer, defaultValue);
+    }
+
+    @Override
+    default <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
+      return this.audience().getOrDefaultFrom(pointer, defaultValue);
     }
 
     @Override

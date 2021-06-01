@@ -26,8 +26,8 @@ package net.kyori.adventure.serializer.configurate4;
 import java.lang.reflect.Type;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.BlockNBTComponent;
-import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 final class BlockNBTPosSerializer extends ScalarSerializer<BlockNBTComponent.Pos> {

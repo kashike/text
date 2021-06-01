@@ -23,14 +23,13 @@
  */
 package net.kyori.adventure.util;
 
+import java.awt.Color;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
-
-import java.awt.Color;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -23,14 +23,33 @@
  */
 package net.kyori.adventure.audience;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.pointer.Pointer;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.identity.Identified;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.PolyNull;
 
 final class EmptyAudience implements Audience {
   static final EmptyAudience INSTANCE = new EmptyAudience();
+
+  @Override
+  public @NonNull <T> Optional<T> get(final @NonNull Pointer<T> pointer) {
+    return Optional.empty();
+  }
+
+  @Override
+  public <T> @PolyNull T getOrDefault(final @NonNull Pointer<T> pointer, final @PolyNull T defaultValue) {
+    return defaultValue;
+  }
+
+  @Override
+  public <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
+    return defaultValue.get();
+  }
 
   @Override
   public void sendMessage(final @NonNull ComponentLike message) {

@@ -29,8 +29,8 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.spongepowered.configurate.ConfigurationNode;
 import org.junit.jupiter.api.Test;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

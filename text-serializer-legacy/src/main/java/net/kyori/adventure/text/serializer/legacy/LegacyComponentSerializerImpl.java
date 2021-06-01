@@ -30,19 +30,22 @@ import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.flattener.ComponentFlattener;
+import net.kyori.adventure.text.flattener.FlattenerListener;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.format.TextFormat;
-import net.kyori.adventure.text.flattener.ComponentFlattener;
-import net.kyori.adventure.text.flattener.FlattenerListener;
+import net.kyori.adventure.util.Services;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -95,8 +98,22 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
   }
 
-  static final LegacyComponentSerializer SECTION_SERIALIZER = new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic());
-  static final LegacyComponentSerializer AMPERSAND_SERIALIZER = new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic());
+  private static final Optional<Provider> SERVICE = Services.service(Provider.class);
+  static final Consumer<Builder> BUILDER = SERVICE
+    .map(Provider::legacy)
+    .orElseGet(() -> builder -> {
+      // NOOP
+    });
+
+  // We cannot store these fields in LegacyComponentSerializerImpl directly due to class initialisation issues.
+  static final class Instances {
+    static final LegacyComponentSerializer SECTION = SERVICE
+      .map(Provider::legacySection)
+      .orElseGet(() -> new LegacyComponentSerializerImpl(SECTION_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic()));
+    static final LegacyComponentSerializer AMPERSAND = SERVICE
+      .map(Provider::legacyAmpersand)
+      .orElseGet(() -> new LegacyComponentSerializerImpl(AMPERSAND_CHAR, HEX_CHAR, null, false, false, ComponentFlattener.basic()));
+  }
 
   private final char character;
   private final char hexCharacter;
@@ -471,9 +488,11 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     private ComponentFlattener flattener = ComponentFlattener.basic();
 
     BuilderImpl() {
+      BUILDER.accept(this); // let service provider touch the builder before anybody else touches it
     }
 
     BuilderImpl(final @NonNull LegacyComponentSerializerImpl serializer) {
+      this();
       this.character = serializer.character;
       this.hexCharacter = serializer.hexCharacter;
       this.urlReplacementConfig = serializer.urlReplacementConfig;

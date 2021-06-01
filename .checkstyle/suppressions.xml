@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suppressions PUBLIC "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN" "http://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
+  <!-- let me be excited, checkstyle! -->
+  <suppress files="api[\\/]src[\\/]main[\\/]java[\\/]net[\\/]kyori[\\/]adventure[\\/]Adventure.java" checks="SummaryJavadoc"/>
+
   <!-- no javadoc on test classes -->
   <suppress files="src[\\/]test[\\/]java[\\/].*" checks="FilteringWriteTag"/>
   <suppress files="src[\\/]test[\\/]java[\\/].*" checks="MissingJavadoc.*"/>

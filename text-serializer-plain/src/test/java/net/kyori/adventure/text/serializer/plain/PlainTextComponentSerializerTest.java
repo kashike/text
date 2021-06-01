@@ -31,10 +31,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PlainComponentSerializerTest {
+class PlainTextComponentSerializerTest {
   @Test
   void testSimpleFrom() {
-    assertEquals(Component.text("foo"), PlainComponentSerializer.plain().deserialize("foo"));
+    assertEquals(Component.text("foo"), PlainTextComponentSerializer.plainText().deserialize("foo"));
   }
 
   @Test
@@ -52,7 +52,7 @@ class PlainComponentSerializerTest {
       )
       .append(Component.text("baz"))
       .build();
-    assertEquals("hifoobarbaz", PlainComponentSerializer.plain().serialize(c1));
+    assertEquals("hifoobarbaz", PlainTextComponentSerializer.plainText().serialize(c1));
 
     final TextComponent c2 = Component.text().content("Hello there, ")
       .decoration(TextDecoration.BOLD, TextDecoration.State.TRUE)
@@ -66,6 +66,6 @@ class PlainComponentSerializerTest {
           .color(NamedTextColor.BLUE)
       )
       .build();
-    assertEquals("Hello there, you!", PlainComponentSerializer.plain().serialize(c2));
+    assertEquals("Hello there, you!", PlainTextComponentSerializer.plainText().serialize(c2));
   }
 }
