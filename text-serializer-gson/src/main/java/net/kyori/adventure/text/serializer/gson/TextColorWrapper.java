@@ -47,7 +47,7 @@ final class TextColorWrapper {
     this.reset = reset;
   }
 
-  static class Serializer extends TypeAdapter<TextColorWrapper> {
+  static final class Serializer extends TypeAdapter<TextColorWrapper> {
     static final Serializer INSTANCE = new Serializer();
 
     private Serializer() {

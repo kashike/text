@@ -93,11 +93,11 @@ final class StyleSerializer extends TypeAdapter<Style> {
     this.showEntitySerializer = new ShowEntitySerializer(this.componentSerializer);
   }
 
-  public TypeAdapter<Component> getComponentSerializer() {
+  public TypeAdapter<Component> componentSerializer() {
     return this.componentSerializer;
   }
 
-  public TypeAdapter<HoverEvent.ShowEntity> getShowEntitySerializer() {
+  public TypeAdapter<HoverEvent.ShowEntity> showEntitySerializer() {
     return this.showEntitySerializer;
   }
 
@@ -142,7 +142,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
       } else if(fieldName.equals(HOVER_EVENT)) {
         final JsonObject hoverEventObject = Streams.parse(in).getAsJsonObject();
         if(hoverEventObject != null) {
-          final HoverEvent.@Nullable Action action = optionallyDeserialize(hoverEventObject.getAsJsonPrimitive(HOVER_EVENT_ACTION), HoverEventActionSerializer.INSTANCE);
+          final HoverEvent.@Nullable Action action = this.optionallyDeserialize(hoverEventObject.getAsJsonPrimitive(HOVER_EVENT_ACTION), HoverEventActionSerializer.INSTANCE);
           if(action != null && action.readable()) {
             final @Nullable Object value;
             if(hoverEventObject.has(HOVER_EVENT_CONTENTS)) {
@@ -204,7 +204,7 @@ final class StyleSerializer extends TypeAdapter<Style> {
     return string -> {
       try {
         return this.componentSerializer.fromJson(string);
-      } catch (final IOException ex) {
+      } catch(final IOException ex) {
         throw new JsonParseException(ex);
       }
     };

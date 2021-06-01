@@ -67,8 +67,8 @@ final class SerializerFactory implements TypeAdapterFactory {
 
     // TODO: this is hideous
     this.styleSerializer = new StyleSerializer(legacyHoverSerializer, emitLegacyHover, this.colorSerializer);
-    this.componentSerializer = this.styleSerializer.getComponentSerializer();
-    this.showEntitySerializer = this.styleSerializer.getShowEntitySerializer();
+    this.componentSerializer = this.styleSerializer.componentSerializer();
+    this.showEntitySerializer = this.styleSerializer.showEntitySerializer();
   }
 
   @Override
