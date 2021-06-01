@@ -1,5 +1,5 @@
 plugins {
-  id "org.jetbrains.kotlin.jvm" version "1.4.32"
+  id "org.jetbrains.kotlin.jvm"
 }
 
 compileKotlin {
@@ -15,9 +15,9 @@ compileTestKotlin {
 }
 
 dependencies {
-  api(project(":adventure-api"))
-  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-  testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+  api(projects.adventureApi)
+  implementation(libs.kotlin.stdlib8)
+  testImplementation(libs.kotlin.testJunit5)
 }
 
 applyJarMetadata(this, "net.kyori.adventure.extra.kotlin")

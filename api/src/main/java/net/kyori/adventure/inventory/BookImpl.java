@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -43,7 +44,7 @@ final class BookImpl implements Book {
   BookImpl(final @NonNull Component title, final @NonNull Component author, final @NonNull List<Component> pages) {
     this.title = requireNonNull(title, "title");
     this.author = requireNonNull(author, "author");
-    this.pages = Collections.unmodifiableList(requireNonNull(pages, "pages"));
+    this.pages = requireNonNull(pages, "pages");
   }
 
   @Override
@@ -145,7 +146,7 @@ final class BookImpl implements Book {
 
     @Override
     public @NonNull Book build() {
-      return new BookImpl(this.title, this.author, new ArrayList<>(this.pages));
+      return new BookImpl(this.title, this.author, MonkeyBars.immutableList(this.pages));
     }
   }
 }

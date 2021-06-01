@@ -1,5 +1,5 @@
 dependencies {
-  api(project(":adventure-api"))
+  api(projects.adventureApi)
 }
 
 applyJarMetadata(this, "net.kyori.adventure.text.serializer.legacy")

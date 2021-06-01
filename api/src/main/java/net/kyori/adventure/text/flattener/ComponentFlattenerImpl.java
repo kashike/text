@@ -23,7 +23,6 @@
  */
 package net.kyori.adventure.text.flattener;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,6 +37,7 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.util.MonkeyBars;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -65,8 +65,8 @@ final class ComponentFlattenerImpl implements ComponentFlattener {
   private final Function<Component, String> unknownHandler;
 
   ComponentFlattenerImpl(final Map<Class<?>, Function<?, String>> flatteners, final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners, final @Nullable Function<Component, String> unknownHandler) {
-    this.flatteners = Collections.unmodifiableMap(new HashMap<>(flatteners));
-    this.complexFlatteners = Collections.unmodifiableMap(new HashMap<>(complexFlatteners));
+    this.flatteners = MonkeyBars.immutableMap(flatteners);
+    this.complexFlatteners = MonkeyBars.immutableMap(complexFlatteners);
     this.unknownHandler = unknownHandler;
   }
 

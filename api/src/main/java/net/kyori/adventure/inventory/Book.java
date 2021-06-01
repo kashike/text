@@ -23,13 +23,12 @@
  */
 package net.kyori.adventure.inventory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Buildable;
+import net.kyori.adventure.util.MonkeyBars;
 import net.kyori.examination.Examinable;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.ApiStatus;
@@ -58,7 +57,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @since 4.0.0
    */
   static @NonNull Book book(final @NonNull Component title, final @NonNull Component author, final @NonNull Collection<Component> pages) {
-    return new BookImpl(title, author, new ArrayList<>(pages));
+    return new BookImpl(title, author, MonkeyBars.immutableList(pages));
   }
 
   /**
@@ -71,7 +70,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    * @since 4.0.0
    */
   static @NonNull Book book(final @NonNull Component title, final @NonNull Component author, final @NonNull Component@NonNull... pages) {
-    return book(title, author, Arrays.asList(pages));
+    return book(title, author, MonkeyBars.immutableList(pages));
   }
 
   /**
@@ -139,7 +138,7 @@ public interface Book extends Buildable<Book, Book.Builder>, Examinable {
    */
   @Contract(value = "_ -> new", pure = true)
   default @NonNull Book pages(final @NonNull Component@NonNull... pages) {
-    return this.pages(Arrays.asList(pages));
+    return this.pages(MonkeyBars.immutableList(pages));
   }
 
   /**

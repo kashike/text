@@ -24,11 +24,9 @@
 package net.kyori.adventure.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  * @since 4.8.0
  */
 public final class MonkeyBars {
-  // Java 8 variant, see Java 10+ variant in java10 source set
+  // Java 10+ variant, see Java 8 variant in main source set
 
   private MonkeyBars() {
   }
@@ -93,7 +91,7 @@ public final class MonkeyBars {
    */
   public static <E> @NonNull List<E> immutableList(final @NonNull Collection<E> original) {
     requireNonNull(original, "original");
-    return Collections.unmodifiableList(new ArrayList<>(original));
+    return List.copyOf(original);
   }
 
   /**
@@ -108,7 +106,7 @@ public final class MonkeyBars {
   @SuppressWarnings("varargs")
   public static <E> @NonNull List<E> immutableList(final @NonNull E@NonNull... original) {
     requireNonNull(original, "original");
-    return Collections.unmodifiableList(Arrays.asList(original));
+    return List.of(original);
   }
 
   /**
@@ -121,6 +119,6 @@ public final class MonkeyBars {
    * @since 4.8.0
    */
   public static <K, V> @NonNull Map<K, V> immutableMap(final @NonNull Map<K, V> original) {
-    return Collections.unmodifiableMap(new HashMap<>(original));
+    return Map.copyOf(original);
   }
 }

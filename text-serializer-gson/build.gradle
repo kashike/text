@@ -1,7 +1,7 @@
 dependencies {
-  api(project(":adventure-api"))
-  api("com.google.code.gson:gson:2.8.0")
-  testImplementation(project(":adventure-nbt"))
+  api(projects.adventureApi)
+  api(libs.google.gson)
+  testImplementation(projects.adventureNbt)
 }
 
 applyJarMetadata(this, "net.kyori.adventure.text.serializer.gson")
