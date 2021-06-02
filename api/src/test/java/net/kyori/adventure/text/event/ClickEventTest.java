@@ -68,4 +68,10 @@ class ClickEventTest {
       assertEquals(action.readable(), !unreadable.contains(action));
     }
   }
+
+  @Test
+  void testValue() {
+    final ClickEvent event = ClickEvent.runCommand("hello world!");
+    assertEquals("hello world!", event.value());
+  }
 }

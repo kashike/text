@@ -28,6 +28,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // https://github.com/KyoriPowered/adventure/issues/363
@@ -42,6 +43,8 @@ class ComponentContainsTest {
 
     assertTrue(c1.contains(c0));
     assertTrue(c1.contains(Component.text("best!"), Component.EQUALS));
+    assertFalse(c1.contains(Component.newline()));
+    assertFalse(c1.contains(Component.text("worst!"), Component.EQUALS));
   }
 
   @Test

@@ -24,7 +24,7 @@
 package net.kyori.adventure.bossbar;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.Collections;
+import com.google.common.collect.Sets;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -34,8 +34,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BossBarTest {
   private final AtomicInteger name = new AtomicInteger();
@@ -109,6 +113,8 @@ public class BossBarTest {
   void testProgress_outOfRange() {
     assertThrows(IllegalArgumentException.class, () -> this.bar.progress(-1f));
     assertThrows(IllegalArgumentException.class, () -> this.bar.progress(1.1f));
+    assertThrows(IllegalArgumentException.class, () -> BossBar.bossBar(Component.empty(), 2F, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS));
+    assertThrows(IllegalArgumentException.class, () -> BossBar.bossBar(Component.empty(), 2F, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS, emptySet()));
   }
 
   @Test
@@ -139,6 +145,12 @@ public class BossBarTest {
 
   @Test
   void testFlags() {
+    // Ensure bar contains the flags we set
+    final BossBar bar = BossBar.bossBar(Component.empty(), 0.5F, BossBar.Color.WHITE, BossBar.Overlay.PROGRESS, Sets.newHashSet(BossBar.Flag.DARKEN_SCREEN));
+    assertTrue(bar.hasFlag(BossBar.Flag.DARKEN_SCREEN));
+    assertFalse(bar.hasFlag(BossBar.Flag.PLAY_BOSS_MUSIC));
+    assertNotNull(bar.addFlags());
+
     assertEquals(ImmutableSet.of(), this.bar.flags(ImmutableSet.of()).flags());
     assertEquals(0, this.flags.get());
 
@@ -225,8 +237,8 @@ public class BossBarTest {
   }
 
   static class Changes implements BossBar.Listener {
-    final AtomicReference<Set<BossBar.Flag>> flagsAdded = new AtomicReference<>(Collections.emptySet());
-    final AtomicReference<Set<BossBar.Flag>> flagsRemoved = new AtomicReference<>(Collections.emptySet());
+    final AtomicReference<Set<BossBar.Flag>> flagsAdded = new AtomicReference<>(emptySet());
+    final AtomicReference<Set<BossBar.Flag>> flagsRemoved = new AtomicReference<>(emptySet());
 
     @Override
     public void bossBarFlagsChanged(final @NonNull BossBar bar, final @NonNull Set<BossBar.Flag> flagsAdded, final @NonNull Set<BossBar.Flag> flagsRemoved) {
@@ -235,8 +247,8 @@ public class BossBarTest {
     }
 
     public void resetAndThen(final Runnable runnable) {
-      this.flagsAdded.set(Collections.emptySet());
-      this.flagsRemoved.set(Collections.emptySet());
+      this.flagsAdded.set(emptySet());
+      this.flagsRemoved.set(emptySet());
       runnable.run();
     }
   }

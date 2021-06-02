@@ -147,6 +147,9 @@ class TextComponentTest extends AbstractComponentTest<TextComponent, TextCompone
     final TextComponent c1 = c0.content("bar");
     assertEquals("foo", c0.content());
     assertEquals("bar", c1.content());
+
+    final TextComponent.Builder c2 = Component.text().content("hello world!");
+    assertEquals("hello world!", c2.content());
   }
 
   @Test

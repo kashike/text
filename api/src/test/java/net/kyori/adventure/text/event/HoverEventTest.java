@@ -28,12 +28,11 @@ import com.google.common.testing.EqualsTester;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class HoverEventTest {
   @Test
@@ -92,6 +91,13 @@ class HoverEventTest {
     final HoverEvent.ShowEntity se1 = se0.name(n1);
     assertEquals(n0, se0.name()); // original should be unmodified
     assertEquals(n1, se1.name());
+  }
+
+  @Test
+  void testShowItemNBT() {
+    final HoverEvent.ShowItem showItem = HoverEvent.ShowItem.of(Key.key("empty"), 1);
+    // We use referential equality here as nbt returns a new item if we changed the NBT, and that's what we want to verify
+    assertNotSame(showItem, showItem.nbt(BinaryTagHolder.of("hello world!")));
   }
 
   @Test

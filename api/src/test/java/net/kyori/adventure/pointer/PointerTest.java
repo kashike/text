@@ -21,52 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.sound;
+package net.kyori.adventure.pointer;
 
-import com.google.common.testing.EqualsTester;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.sound.Sound.Source;
 import org.junit.jupiter.api.Test;
 
-import java.util.Locale;
-
-import static net.kyori.adventure.sound.Sound.sound;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class SoundTest {
-  private static final Key SOUND_KEY = Key.key("minecraft", "block.fence_gate.open");
-  private static final Sound.Type SOUND_TYPE = () -> SOUND_KEY;
+class PointerTest {
 
   @Test
-  void testGetters() {
-    final Sound sound = sound(SOUND_KEY, Source.HOSTILE, 1f, 1f);
-    assertEquals(SOUND_KEY, sound.name());
-    assertEquals(Source.HOSTILE, sound.source());
-    assertEquals(1f, sound.volume());
-    assertEquals(1f, sound.pitch());
+  void testInitializer() {
+    assertNotNull(Pointer.pointer(Object.class, Key.key("empty")));
   }
 
   @Test
-  void testOfIsEqual() {
-    new EqualsTester()
-      .addEqualityGroup(
-        sound(SOUND_KEY, Source.HOSTILE, 1f, 1f),
-        sound(SOUND_TYPE, Source.HOSTILE, 1f, 1f),
-        sound(() -> SOUND_TYPE, Source.HOSTILE, 1f, 1f)
-      )
-      .testEquals();
+  void testValues() {
+    final Key key = Key.key("empty");
+    final Pointer<Object> pointer = new PointerImpl<>(Object.class, key);
+    assertEquals(Object.class, pointer.type());
+    assertEquals(key, pointer.key());
   }
 
   @Test
-  void testInitializers_notNull() {
-    assertNotNull(sound(SOUND_KEY, () -> Source.HOSTILE, 1F, 1F));
-    assertNotNull(sound(SOUND_TYPE, Source.HOSTILE, 1F, 1F));
-    assertNotNull(sound(() -> SOUND_TYPE, () -> Source.HOSTILE, 1F, 1F));
-  }
-
-  @Test
-  void testIndices() {
-    assertEquals(Source.MASTER.name().toLowerCase(Locale.ROOT), Source.NAMES.key(Source.MASTER));
+  void testPointered_getOrDefault() {
+    final Pointered pointered = new Pointered() {};
+    assertNotNull(pointered.getOrDefault(new PointerImpl<>(Object.class, Key.key("empty")), new Object()));
+    assertNotNull(pointered.getOrDefaultFrom(new PointerImpl<>(Object.class, Key.key("empty")), Object::new));
   }
 }

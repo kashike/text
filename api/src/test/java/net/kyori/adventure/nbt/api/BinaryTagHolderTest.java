@@ -21,52 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package net.kyori.adventure.sound;
+package net.kyori.adventure.nbt.api;
 
-import com.google.common.testing.EqualsTester;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.sound.Sound.Source;
+import net.kyori.adventure.util.Codec;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 
-import java.util.Locale;
-
-import static net.kyori.adventure.sound.Sound.sound;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class SoundTest {
-  private static final Key SOUND_KEY = Key.key("minecraft", "block.fence_gate.open");
-  private static final Sound.Type SOUND_TYPE = () -> SOUND_KEY;
+class BinaryTagHolderTest {
+  private static final Codec.Decoder<String, String, Exception> NOOP_DECODER = new Codec.Decoder<String, String, Exception>() {
+    @Override
+    public @NonNull String decode(@NonNull String encoded) throws Exception {
+      return "";
+    }
+  };
+  private static final Codec.Encoder<String, String, Exception> NOOP_ENCODER = new Codec.Encoder<String, String, Exception>() {
+    @Override
+    public @NonNull String encode(@NonNull String decoded) throws Exception {
+      return "";
+    }
+  };
+  private static final Codec<String, String, Exception, Exception> NOOP_CODEC = Codec.of(NOOP_DECODER, NOOP_ENCODER);
 
   @Test
-  void testGetters() {
-    final Sound sound = sound(SOUND_KEY, Source.HOSTILE, 1f, 1f);
-    assertEquals(SOUND_KEY, sound.name());
-    assertEquals(Source.HOSTILE, sound.source());
-    assertEquals(1f, sound.volume());
-    assertEquals(1f, sound.pitch());
+  void testInitializers_notNull() throws Exception {
+    assertNotNull(BinaryTagHolder.encode("", NOOP_CODEC));
+    assertNotNull(BinaryTagHolder.of(""));
   }
 
   @Test
-  void testOfIsEqual() {
-    new EqualsTester()
-      .addEqualityGroup(
-        sound(SOUND_KEY, Source.HOSTILE, 1f, 1f),
-        sound(SOUND_TYPE, Source.HOSTILE, 1f, 1f),
-        sound(() -> SOUND_TYPE, Source.HOSTILE, 1f, 1f)
-      )
-      .testEquals();
-  }
-
-  @Test
-  void testInitializers_notNull() {
-    assertNotNull(sound(SOUND_KEY, () -> Source.HOSTILE, 1F, 1F));
-    assertNotNull(sound(SOUND_TYPE, Source.HOSTILE, 1F, 1F));
-    assertNotNull(sound(() -> SOUND_TYPE, () -> Source.HOSTILE, 1F, 1F));
-  }
-
-  @Test
-  void testIndices() {
-    assertEquals(Source.MASTER.name().toLowerCase(Locale.ROOT), Source.NAMES.key(Source.MASTER));
+  void testValues_notNull() throws Exception {
+    assertNotNull(BinaryTagHolder.of("").string());
+    assertEquals("hello world!", BinaryTagHolder.of("hello world!").string());
+    assertNotNull(BinaryTagHolder.of("").get(NOOP_CODEC));
   }
 }

@@ -8,6 +8,7 @@ pluginManagement {
     id("net.kyori.indra.license-header") version indraVersion
     id("net.kyori.indra.publishing.sonatype") version indraVersion
     id("com.adarshr.test-logger") version "3.0.0"
+    id("info.solidsoft.pitest") version "1.6.0"
   }
   includeBuild("build-logic")
 }
