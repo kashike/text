@@ -24,6 +24,7 @@
 package net.kyori.adventure.title;
 
 import java.time.Duration;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.util.Ticks;
 import net.kyori.examination.Examinable;
@@ -94,6 +95,45 @@ public interface Title extends Examinable {
    * @since 4.0.0
    */
   @Nullable Times times();
+
+  /**
+   * A part of a title.
+   *
+   * @since 4.8.0
+   */
+  enum Part {
+    /**
+     * Title.
+     *
+     * @see Title#title()
+     * @since 4.8.0
+     */
+    TITLE,
+    /**
+     * Subtitle.
+     *
+     * @see Title#subtitle()
+     * @since 4.8.0
+     */
+    SUBTITLE,
+    /**
+     * Times.
+     *
+     * @see Title#times()
+     * @since 4.8.0
+     */
+    TIMES;
+
+    /**
+     * Gets a set of all parts.
+     *
+     * @return a set of parts
+     * @since 4.8.0
+     */
+    public static @NonNull Set<Part> all() {
+      return TitleImpl.ALL_PARTS;
+    }
+  }
 
   /**
    * Title times.

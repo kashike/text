@@ -25,14 +25,17 @@ package net.kyori.adventure.title;
 
 import java.time.Duration;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.util.ShadyPines;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class TitleImpl implements Title {
+  static final Set<Part> ALL_PARTS = ShadyPines.enumSet(Part.class, Part.values());
   private final Component title;
   private final Component subtitle;
   private final @Nullable Times times;

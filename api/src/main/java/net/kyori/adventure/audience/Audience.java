@@ -398,11 +398,36 @@ public interface Audience extends Pointered {
   /**
    * Shows a title.
    *
+   * <p>This method is the same as if calling {@link #showTitle(Title, Title.Part...)} with all {@link Title.Part}s.</p>
+   *
    * @param title a title
    * @see Title
    * @since 4.0.0
    */
   default void showTitle(final @NonNull Title title) {
+    this.showTitle(title, Title.Part.all());
+  }
+
+  /**
+   * Shows a title.
+   *
+   * @param title a title
+   * @param parts the parts to send
+   * @see Title
+   * @since 4.8.0
+   */
+  default void showTitle(final @NonNull Title title, final Title.@NonNull Part@NonNull... parts) {
+  }
+
+  /**
+   * Shows a title.
+   *
+   * @param title a title
+   * @param parts the parts to send
+   * @see Title
+   * @since 4.8.0
+   */
+  default void showTitle(final @NonNull Title title, final @NonNull Iterable<Title.Part> parts) {
   }
 
   /**
