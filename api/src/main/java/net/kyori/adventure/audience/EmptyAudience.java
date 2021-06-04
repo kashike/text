@@ -24,6 +24,8 @@
 package net.kyori.adventure.audience;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.identity.Identity;
@@ -49,6 +51,15 @@ final class EmptyAudience implements Audience {
   @Override
   public <T> @PolyNull T getOrDefaultFrom(final @NonNull Pointer<T> pointer, final @NonNull Supplier<? extends T> defaultValue) {
     return defaultValue.get();
+  }
+
+  @Override
+  public @NonNull Audience filterAudience(final @NonNull Predicate<? super Audience> filter) {
+    return this;
+  }
+
+  @Override
+  public void forEachAudience(final @NonNull Consumer<? super Audience> action) {
   }
 
   @Override
