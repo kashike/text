@@ -47,7 +47,12 @@ final class TextColorWrapper {
     this.reset = reset;
   }
 
-  static class Serializer extends TypeAdapter<TextColorWrapper> {
+  static final class Serializer extends TypeAdapter<TextColorWrapper> {
+    static final Serializer INSTANCE = new Serializer();
+
+    private Serializer() {
+    }
+
     @Override
     public void write(final JsonWriter out, final TextColorWrapper value) {
       throw new JsonSyntaxException("Cannot write TextColorWrapper instances");
