@@ -544,14 +544,20 @@ final class LegacyComponentSerializerImpl implements LegacyComponentSerializer {
     }
 
     @Override
-    public @NonNull Builder hexColors() {
-      this.hexColours = true;
+    public @NonNull Builder disableExtractUrls() {
+      this.urlReplacementConfig = null;
       return this;
     }
 
     @Override
-    public @NonNull Builder useUnusualXRepeatedCharacterHexFormat() {
-      this.useTerriblyStupidHexFormat = true; // :(
+    public @NonNull Builder hexColors(final boolean flag) {
+      this.hexColours = flag;
+      return this;
+    }
+
+    @Override
+    public @NonNull Builder useUnusualXRepeatedCharacterHexFormat(final boolean flag) {
+      this.useTerriblyStupidHexFormat = flag;
       return this;
     }
 
