@@ -35,6 +35,9 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
+import net.kyori.adventure.util.LocationLike;
+import net.kyori.adventure.util.Vector3dLike;
+import net.kyori.adventure.util.Vector3iLike;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -454,6 +457,32 @@ public interface Audience extends Pointered {
   }
 
   /**
+   * Plays a sound at a position.
+   *
+   * @param sound a sound
+   * @param pos a position
+   * @see Sound
+   * @since 4.8.0
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void playSound(final @NotNull Sound sound, final @NotNull Vector3iLike pos) {
+    this.playSound(sound, pos.x(), pos.y(), pos.z());
+  }
+
+  /**
+   * Plays a sound at a position.
+   *
+   * @param sound a sound
+   * @param pos a position
+   * @see Sound
+   * @since 4.8.0
+   */
+  @ForwardingAudienceOverrideNotRequired
+  default void playSound(final @NotNull Sound sound, final @NotNull Vector3dLike pos) {
+    this.playSound(sound, pos.x(), pos.y(), pos.z());
+  }
+
+  /**
    * Plays a sound at a location.
    *
    * @param sound a sound
@@ -464,6 +493,20 @@ public interface Audience extends Pointered {
    * @since 4.0.0
    */
   default void playSound(final @NotNull Sound sound, final double x, final double y, final double z) {
+  }
+
+  /**
+   * Plays a sound at a location.
+   *
+   * <p>If the audience member is not in the same world/dimension/instance as the location, the sound will not be played.</p>
+   *
+   * @param sound a sound
+   * @param loc a location
+   * @see LocationLike
+   * @see Sound
+   * @since 4.8.0
+   */
+  default void playSound(final @NotNull Sound sound, final @NotNull LocationLike loc) {
   }
 
   /**
