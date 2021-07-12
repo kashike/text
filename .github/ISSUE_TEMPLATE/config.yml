@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Adventure Documentation
+    url:  https://docs.adventure.kyori.net/
+    about: If you're asking how to do something, do not create an issues - read our docs first!
+  - name: Adventure Support Discord
+    url: https://discord.gg/MMfhJ8F
+    about: If the docs do not answer your question, come ask in our support Discord server. ALL SUPPORT REQUESTS MUST BE MADE VIA DISCORD - CREATING A REQUEST HERE WILL RESULT IN IMMEDIATE CLOSURE OF THE REQUEST.
