@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
@@ -108,7 +109,7 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    */
   static @NotNull Style style(final @Nullable TextColor color) {
     if (color == null) return empty();
-    return new StyleImpl(null, color, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, TextDecoration.State.NOT_SET, null, null, null);
+    return new StyleImpl(null, color, Stream.of(TextDecoration.values()).map(decoration -> TextDecoration.State.NOT_SET).toArray(TextDecoration.State[]::new), null, null, null);
   }
 
   /**
