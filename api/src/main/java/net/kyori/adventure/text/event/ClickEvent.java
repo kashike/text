@@ -25,6 +25,7 @@ package net.kyori.adventure.text.event;
 
 import java.net.URL;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
@@ -32,6 +33,7 @@ import net.kyori.adventure.util.Index;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @since 4.0.0
  */
-public final class ClickEvent implements Examinable, StyleBuilderApplicable {
+public final class ClickEvent implements ClickEventSource, Examinable, StyleBuilderApplicable {
   /**
    * Creates a click event that opens a url.
    *
@@ -167,6 +169,19 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
   }
 
   /**
+   * Sets the click event action.
+   *
+   * @param action the click event action
+   * @return a copy of this click event with the provided action
+   * @since 4.9.0
+   */
+  @Contract(pure = true)
+  public @NotNull ClickEvent action(final @NotNull Action action) {
+    if (Objects.requireNonNull(action, "action") == this.action) return this;
+    return new ClickEvent(action, this.value);
+  }
+
+  /**
    * Gets the click event value.
    *
    * @return the click event value
@@ -174,6 +189,24 @@ public final class ClickEvent implements Examinable, StyleBuilderApplicable {
    */
   public @NotNull String value() {
     return this.value;
+  }
+
+  /**
+   * Sets the click event value.
+   *
+   * @param value the click event value
+   * @return a copy of this click event with the provided value
+   * @since 4.9.0
+   */
+  @Contract(pure = true)
+  public @NotNull ClickEvent value(final @NotNull String value) {
+    if (Objects.requireNonNull(value, "value").equals(this.value)) return this;
+    return new ClickEvent(this.action, value);
+  }
+
+  @Override
+  public @NotNull ClickEvent asClickEvent(final @NotNull UnaryOperator<ClickEvent> op) {
+    return Objects.requireNonNull(op, "op").apply(this);
   }
 
   @Override

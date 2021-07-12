@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.ClickEventSource;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
@@ -1838,6 +1839,18 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(pure = true)
   default @NotNull Component clickEvent(final @Nullable ClickEvent event) {
     return this.style(this.style().clickEvent(event));
+  }
+
+  /**
+   * Sets the click event of this component from a source.
+   *
+   * @param source the click event source
+   * @return a component
+   * @since 4.9.0
+   */
+  @Contract(pure = true)
+  default @NotNull Component clickEventFromSource(final @NotNull ClickEventSource source) {
+    return this.clickEvent(Objects.requireNonNull(source, "source").asClickEvent());
   }
 
   /**

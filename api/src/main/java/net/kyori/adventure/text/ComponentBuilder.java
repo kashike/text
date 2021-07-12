@@ -24,11 +24,13 @@
 package net.kyori.adventure.text;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.ClickEventSource;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -296,6 +298,18 @@ public interface ComponentBuilder<C extends BuildableComponent<C, B>, B extends 
    */
   @Contract("_ -> this")
   @NotNull B clickEvent(final @Nullable ClickEvent event);
+
+  /**
+   * Sets the click event of this component.
+   *
+   * @param source the click event source
+   * @return this builder
+   * @since 4.9.0
+   */
+  @Contract("_ -> this")
+  default @NotNull B clickEventFromSource(final @NotNull ClickEventSource source) {
+    return this.clickEvent(Objects.requireNonNull(source, "source").asClickEvent());
+  }
 
   /**
    * Sets the hover event of this component.

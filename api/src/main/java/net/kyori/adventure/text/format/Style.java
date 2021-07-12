@@ -25,12 +25,14 @@ package net.kyori.adventure.text.format;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.ClickEventSource;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.util.Buildable;
@@ -361,6 +363,17 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
    * @since 4.0.0
    */
   @NotNull Style clickEvent(final @Nullable ClickEvent event);
+
+  /**
+   * Sets the click event.
+   *
+   * @param source the click event source
+   * @return a style
+   * @since 4.9.0
+   */
+  default @NotNull Style clickEventFromSource(final @NotNull ClickEventSource source) {
+    return this.clickEvent(Objects.requireNonNull(source, "source").asClickEvent());
+  }
 
   /**
    * Gets the hover event.
@@ -712,6 +725,8 @@ public interface Style extends Buildable<Style, Style.Builder>, Examinable {
      */
     @Contract("_ -> this")
     @NotNull Builder clickEvent(final @Nullable ClickEvent event);
+
+
 
     /**
      * Sets the hover event.
