@@ -36,6 +36,7 @@ import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.title.Title;
+import net.kyori.adventure.title.TitlePart;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -403,7 +404,24 @@ public interface Audience extends Pointered {
    * @see Title
    * @since 4.0.0
    */
+  @ForwardingAudienceOverrideNotRequired
   default void showTitle(final @NotNull Title title) {
+    this.sendTitlePart(TitlePart.TITLE, title.title());
+    this.sendTitlePart(TitlePart.SUBTITLE, title.subtitle());
+
+    final Title.Times times = title.times();
+    if (times != null) this.sendTitlePart(TitlePart.TIMES, times);
+  }
+
+  /**
+   * Shows a part of a title.
+   *
+   * @param titlePart the part
+   * @param content the content
+   * @param <T> the type of the content of the part
+   * @since 4.8.0
+   */
+  default <T> void sendTitlePart(final @NotNull TitlePart<T> titlePart, final @NotNull T content) {
   }
 
   /**
