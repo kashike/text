@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -46,6 +48,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.translation.Translatable;
 import net.kyori.adventure.util.Buildable;
+import net.kyori.adventure.util.ForwardingIterator;
 import net.kyori.adventure.util.IntFunction2;
 import net.kyori.examination.Examinable;
 import org.jetbrains.annotations.ApiStatus;
@@ -1914,6 +1917,44 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    */
   @Contract(pure = true)
   @NotNull Component replaceText(final @NotNull TextReplacementConfig config);
+
+  /**
+   * Returns an iterable view of this component.
+   *
+   * @param type the type
+   * @return the iterable
+   * @since 4.9.0
+   */
+  default @NotNull Iterable<Component> iterable(final @NotNull ComponentIteratorType type) {
+    Objects.requireNonNull(type, "type");
+    return new ForwardingIterator<>(() -> this.iterator(type), () -> this.spliterator(type));
+  }
+
+  /**
+   * Returns an iterator for this component.
+   *
+   * <p>As components are immutable, this iterator does not support removal.</p>
+   *
+   * @param type the type of the iterator
+   * @return the iterator
+   * @since 4.9.0
+   */
+  default @NotNull Iterator<Component> iterator(final @NotNull ComponentIteratorType type) {
+    return new ComponentIterator(this, type);
+  }
+
+  /**
+   * Returns a spliterator for this component.
+   *
+   * <p>The resulting spliterator has the {@link Spliterator#IMMUTABLE}, {@link Spliterator#NONNULL} and {@link Spliterator#ORDERED} characteristics.</p>
+   *
+   * @param type the type of the underlying iterator
+   * @return the iterator
+   * @since 4.9.0
+   */
+  default @NotNull Spliterator<Component> spliterator(final @NotNull ComponentIteratorType type) {
+    return Spliterators.spliteratorUnknownSize(this.iterator(type), Spliterator.IMMUTABLE & Spliterator.NONNULL & Spliterator.ORDERED);
+  }
 
   /**
    * Finds and replaces text within any {@link Component}s using a string literal.
