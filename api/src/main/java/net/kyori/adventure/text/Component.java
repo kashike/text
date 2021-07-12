@@ -1916,6 +1916,14 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @NotNull Component replaceText(final @NotNull TextReplacementConfig config);
 
   /**
+   * Create a new component with any redundant style elements or children removed.
+   *
+   * @return the optimized component
+   * @since 4.8.0
+   */
+  @NonNull Component compact();
+
+  /**
    * Finds and replaces text within any {@link Component}s using a string literal.
    *
    * @param search a string literal
