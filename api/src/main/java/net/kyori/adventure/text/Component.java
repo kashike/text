@@ -25,7 +25,6 @@ package net.kyori.adventure.text;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -146,7 +145,9 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @since 4.0.0
+   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, ComponentLike...)} with a {@link JoinConfiguration} instead.
    */
+  @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent join(final @NotNull ComponentLike separator, final @NotNull ComponentLike@NotNull... components) {
     return join(separator, Arrays.asList(components));
@@ -159,21 +160,43 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param components the components
    * @return a text component
    * @since 4.0.0
+   * @deprecated for removal since 4.9.0, use {@link #join(JoinConfiguration, Iterable)} with a {@link JoinConfiguration} instead.
    */
+  @Deprecated
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull TextComponent join(final @NotNull ComponentLike separator, final Iterable<? extends ComponentLike> components) {
-    final Iterator<? extends ComponentLike> it = components.iterator();
-    if (!it.hasNext()) {
-      return Component.empty();
-    }
-    final TextComponent.Builder builder = text();
-    while (it.hasNext()) {
-      builder.append(it.next());
-      if (it.hasNext()) {
-        builder.append(separator);
-      }
-    }
-    return builder.build();
+    final Component component = join(JoinConfiguration.separator(separator), components);
+
+    if (component instanceof TextComponent) return (TextComponent) component;
+    return Component.text().append(component).build();
+  }
+
+  /**
+   * Joins {@code components} using the configuration in {@code config}.
+   *
+   * @param config the join configuration
+   * @param components the components
+   * @return a text component
+   * @see JoinConfiguration
+   * @since 4.9.0
+   */
+  @Contract(pure = true)
+  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull ComponentLike @NotNull... components) {
+    return join(config, Arrays.asList(components));
+  }
+
+  /**
+   * Joins {@code components} using the configuration in {@code config}.
+   *
+   * @param config the join configuration
+   * @param components the components
+   * @return a text component
+   * @see JoinConfiguration
+   * @since 4.9.0
+   */
+  @Contract(pure = true)
+  static @NotNull Component join(final @NotNull JoinConfiguration config, final @NotNull Iterable<? extends ComponentLike> components) {
+    return JoinConfigurationImpl.join(config, components);
   }
 
   /**
