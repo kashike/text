@@ -369,6 +369,18 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Creates a keybind component with a keybind.
+   *
+   * @param keybind the keybind
+   * @return the keybind component
+   * @since 4.9.0
+   */
+  @Contract(value = "_ -> new", pure = true)
+  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind) {
+    return keybind(Objects.requireNonNull(keybind, "keybind").asKeybind(), Style.empty());
+  }
+
+  /**
    * Creates a keybind component with a keybind and styling.
    *
    * @param keybind the keybind
@@ -382,6 +394,19 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   }
 
   /**
+   * Creates a keybind component with a keybind and styling.
+   *
+   * @param keybind the keybind
+   * @param style the style
+   * @return the keybind component
+   * @since 4.9.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @NotNull Style style) {
+    return new KeybindComponentImpl(Collections.emptyList(), style, Objects.requireNonNull(keybind, "keybind").asKeybind());
+  }
+
+  /**
    * Creates a keybind component with a keybind, and optional color.
    *
    * @param keybind the keybind
@@ -392,6 +417,19 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
   @Contract(value = "_, _ -> new", pure = true)
   static @NotNull KeybindComponent keybind(final @NotNull String keybind, final @Nullable TextColor color) {
     return keybind(keybind, Style.style(color));
+  }
+
+  /**
+   * Creates a keybind component with a keybind, and optional color.
+   *
+   * @param keybind the keybind
+   * @param color the color
+   * @return the keybind component
+   * @since 4.9.0
+   */
+  @Contract(value = "_, _ -> new", pure = true)
+  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @Nullable TextColor color) {
+    return keybind(Objects.requireNonNull(keybind, "keybind").asKeybind(), Style.style(color));
   }
 
   /**
@@ -415,11 +453,39 @@ public interface Component extends ComponentBuilderApplicable, ComponentLike, Ex
    * @param color the color
    * @param decorations the decorations
    * @return the keybind component
+   * @since 4.9.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @Nullable TextColor color, final TextDecoration@NotNull... decorations) {
+    return keybind(Objects.requireNonNull(keybind, "keybind").asKeybind(), Style.style(color, decorations));
+  }
+
+  /**
+   * Creates a keybind component with a keybind, and optional color and decorations.
+   *
+   * @param keybind the keybind
+   * @param color the color
+   * @param decorations the decorations
+   * @return the keybind component
    * @since 4.0.0
    */
   @Contract(value = "_, _, _ -> new", pure = true)
   static @NotNull KeybindComponent keybind(final @NotNull String keybind, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
     return keybind(keybind, Style.style(color, decorations));
+  }
+
+  /**
+   * Creates a keybind component with a keybind, and optional color and decorations.
+   *
+   * @param keybind the keybind
+   * @param color the color
+   * @param decorations the decorations
+   * @return the keybind component
+   * @since 4.9.0
+   */
+  @Contract(value = "_, _, _ -> new", pure = true)
+  static @NotNull KeybindComponent keybind(final KeybindComponent.@NotNull KeybindLike keybind, final @Nullable TextColor color, final @NotNull Set<TextDecoration> decorations) {
+    return keybind(Objects.requireNonNull(keybind, "keybind").asKeybind(), Style.style(color, decorations));
   }
 
   /*
