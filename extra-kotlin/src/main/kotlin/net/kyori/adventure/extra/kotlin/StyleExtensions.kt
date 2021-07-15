@@ -24,12 +24,14 @@
 package net.kyori.adventure.extra.kotlin
 
 import net.kyori.adventure.text.format.Style
+import org.jetbrains.annotations.Contract
 
 /**
- * Builds a new [Style] from the specified [builder].
+ * Allows editing using [Style.Builder] as the receiver parameter.
  *
- * @param builder the builder to apply values from
- * @return a new [Style]
- * @since 4.6.0
+ * @param consumer the consumer to edit this style with
+ * @return a new style, with the changes applied from this builder
+ * @since 4.8.0
  */
-public fun style(builder: Style.Builder.() -> Unit): Style = Style.style(builder)
+@Contract("_ -> new")
+public fun Style.edit(consumer: Style.Builder.() -> Unit): Style = edit(consumer)

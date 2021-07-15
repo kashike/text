@@ -23,13 +23,34 @@
  */
 package net.kyori.adventure.extra.kotlin
 
-import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.util.HSVLike
 
 /**
- * Builds a new [Style] from the specified [builder].
+ * The [HSVLike.h] component.
  *
- * @param builder the builder to apply values from
- * @return a new [Style]
- * @since 4.6.0
+ * Allows for destructuring into `(h, s, v)`.
+ *
+ * @return the [HSVLike.h] component
+ * @since 4.8.0
  */
-public fun style(builder: Style.Builder.() -> Unit): Style = Style.style(builder)
+public operator fun HSVLike.component1(): Float = h()
+
+/**
+ * The [HSVLike.s] component.
+ *
+ * Allows for destructuring into `(h, s, v)`.
+ *
+ * @return the [HSVLike.s] component
+ * @since 4.8.0
+ */
+public operator fun HSVLike.component2(): Float = s()
+
+/**
+ * The [HSVLike.v] component.
+ *
+ * Allows for destructuring into `(h, s, v)`.
+ *
+ * @return the [HSVLike.v] component
+ * @since 4.8.0
+ */
+public operator fun HSVLike.component3(): Float = v()

@@ -23,13 +23,34 @@
  */
 package net.kyori.adventure.extra.kotlin
 
-import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.BlockNBTComponent
 
 /**
- * Builds a new [Style] from the specified [builder].
+ * The X component of this world position.
  *
- * @param builder the builder to apply values from
- * @return a new [Style]
- * @since 4.6.0
+ * Allows for destructuring into `(x, y, z)`.
+ *
+ * @return the X component
+ * @since 4.8.0
  */
-public fun style(builder: Style.Builder.() -> Unit): Style = Style.style(builder)
+public operator fun BlockNBTComponent.WorldPos.component1(): BlockNBTComponent.WorldPos.Coordinate = x()
+
+/**
+ * The Y component of this world position.
+ *
+ * Allows for destructuring into `(x, y, z)`.
+ *
+ * @return the Y component
+ * @since 4.8.0
+ */
+public operator fun BlockNBTComponent.WorldPos.component2(): BlockNBTComponent.WorldPos.Coordinate = y()
+
+/**
+ * The Z component of this world position.
+ *
+ * Allows for destructuring into `(x, y, z)`.
+ *
+ * @return the Z component
+ * @since 4.8.0
+ */
+public operator fun BlockNBTComponent.WorldPos.component3(): BlockNBTComponent.WorldPos.Coordinate = z()

@@ -33,18 +33,74 @@ import net.kyori.adventure.text.StorageNBTComponent
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.TranslatableComponent
 
-fun blockNBT(builder: BlockNBTComponent.Builder.() -> Unit): BlockNBTComponent = Component.blockNBT(builder)
+/**
+ * Builds a new [BlockNBTComponent] from the specified [builder].
+ *
+ * @param builder the builder to apply values from
+ * @return a new [BlockNBTComponent]
+ * @since 4.6.0
+ */
+public fun blockNBT(builder: BlockNBTComponent.Builder.() -> Unit): BlockNBTComponent = Component.blockNBT(builder)
 
-fun entityNBT(builder: EntityNBTComponent.Builder.() -> Unit): EntityNBTComponent = Component.entityNBT(builder)
+/**
+ * Builds a new [EntityNBTComponent] from the specified [builder].
+ *
+ * @param builder the builder to apply values from
+ * @return a new [EntityNBTComponent]
+ * @since 4.6.0
+ */
+public fun entityNBT(builder: EntityNBTComponent.Builder.() -> Unit): EntityNBTComponent = Component.entityNBT(builder)
 
-fun keybind(builder: KeybindComponent.Builder.() -> Unit): KeybindComponent = Component.keybind(builder)
+/**
+ * Builds a new [KeybindComponent] from the specified [builder].
+ *
+ * @param builder the builder to apply values from
+ * @return a new [KeybindComponent]
+ * @since 4.6.0
+ */
+public fun keybind(builder: KeybindComponent.Builder.() -> Unit): KeybindComponent = Component.keybind(builder)
 
-fun score(builder: ScoreComponent.Builder.() -> Unit): ScoreComponent = Component.score(builder)
+/**
+ * Builds a new [ScoreComponent] from the specified [builder].
+ *
+ * @param builder the builder to apply values from
+ * @return a new [ScoreComponent]
+ * @since 4.6.0
+ */
+public fun score(builder: ScoreComponent.Builder.() -> Unit): ScoreComponent = Component.score(builder)
 
-fun selector(builder: SelectorComponent.Builder.() -> Unit): SelectorComponent = Component.selector(builder)
+/**
+ * Builds a new [SelectorComponent] from the specified [builder].
+ *
+ * @param builder the builder to apply values from
+ * @return a new [SelectorComponent]
+ * @since 4.6.0
+ */
+public fun selector(builder: SelectorComponent.Builder.() -> Unit): SelectorComponent = Component.selector(builder)
 
-fun storageNBT(builder: StorageNBTComponent.Builder.() -> Unit): StorageNBTComponent = Component.storageNBT(builder)
+/**
+ * Builds a new [StorageNBTComponent] from the specified [builder].
+ *
+ * @param builder the builder to apply values from
+ * @return a new [StorageNBTComponent]
+ * @since 4.6.0
+ */
+public fun storageNBT(builder: StorageNBTComponent.Builder.() -> Unit): StorageNBTComponent = Component.storageNBT(builder)
 
-fun text(builder: TextComponent.Builder.() -> Unit): TextComponent = Component.text(builder)
+/**
+ * Builds a new [TextComponent] from the specified [builder].
+ *
+ * @param builder the builder to apply values from
+ * @return a new [TextComponent]
+ * @since 4.6.0
+ */
+public fun text(builder: TextComponent.Builder.() -> Unit): TextComponent = Component.text(builder)
 
-fun translatable(builder: TranslatableComponent.Builder.() -> Unit): TranslatableComponent = Component.translatable(builder)
+/**
+ * Builds a new [TranslatableComponent] from the specified [builder].
+ *
+ * @param builder the builder to apply values from
+ * @return a new [TranslatableComponent]
+ * @since 4.6.0
+ */
+public fun translatable(builder: TranslatableComponent.Builder.() -> Unit): TranslatableComponent = Component.translatable(builder)
